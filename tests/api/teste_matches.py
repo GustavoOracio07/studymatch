@@ -62,6 +62,26 @@ check("match com conta apagada é ignorado", r.status_code == 200 and r.json()["
 r = req("GET", "/meus_matches")
 check("GET meus_matches sem token -> 401", r.status_code == 401, r.text)
 
+# exclusão da conta apaga os interesses de match (origem ou alvo, qualquer status)
+te, ide, _, _ = novo_aluno("matche")
+tf, idf, _, _ = novo_aluno("matchf")
+tg, idg, _, _ = novo_aluno("matchg")
+th, idh, _, _ = novo_aluno("matchh")
+mi_ef = req("POST", "/match_interesse", te, json={"usuario_alvo_id": idf}).json()["id"]
+req("PATCH", f"/match_interesse/{mi_ef}", tf, json={"status": "match"})          # E e F: match confirmado
+req("POST", "/match_interesse", te, json={"usuario_alvo_id": idg})               # E -> G pendente (enviado)
+req("POST", "/match_interesse", th, json={"usuario_alvo_id": ide})               # H -> E pendente (recebido)
+r = apagar_aluno(te)
+check("E apaga a conta -> 200", r.status_code == 200, r.text)
+for nome, token in (("F (match)", tf), ("G (recebeu de E)", tg), ("H (enviou para E)", th)):
+    r = req("GET", "/match_interesse", token)
+    check(f"interesse com E apagado para {nome}",
+          r.status_code == 200 and all(ide not in (m["usuario_id"], m["usuario_alvo_id"]) for m in r.json()), r.text)
+r = req("GET", "/meus_matches", tf)
+check("F não tem mais o match com E em meus_matches", r.json()["confirmados"] == [], r.text)
+for token in (tf, tg, th):
+    apagar_aluno(token)
+
 for t in (ta, tc, td):
     apagar_aluno(t)
 resumo()
