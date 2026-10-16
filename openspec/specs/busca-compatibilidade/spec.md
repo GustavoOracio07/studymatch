@@ -43,11 +43,11 @@ O cálculo SHALL ser simétrico (A com B dá o mesmo resultado que B com A).
 - **WHEN** um cliente chama `GET /compativeis` sem token
 - **THEN** o sistema responde 401
 
-### Requirement: Página Buscar colegas
-O app SHALL ter a página "Buscar colegas", que mostra a lista de `GET /compativeis` com percentual, disciplinas e horários em comum, e permite demonstrar interesse.
+### Requirement: Colegas compatíveis no Início
+A página "Início" SHALL mostrar a lista de `GET /compativeis` em cartões com o selo de compatibilidade, as disciplinas e os horários em comum e o sobre mim, com filtro por matéria e semestre e ordenação, e SHALL permitir demonstrar interesse com o botão "Dar match".
 
 #### Scenario: Demonstrar interesse pela tela
-- **WHEN** o aluno clica em "Tenho interesse" em um colega
+- **WHEN** o aluno clica em "Dar match" em um colega
 - **THEN** o interesse é enviado e o cartão passa a mostrar "Interesse enviado"
 
 #### Scenario: Nenhum colega compatível
