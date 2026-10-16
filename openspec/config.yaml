@@ -43,7 +43,10 @@ rules:
 operations:
   apply:
     guidance:
-      - Revisar as alterações com git diff e usar xano workspace push com --dry-run antes do push real.
+      - Revisar as alterações com git diff e usar xano workspace push com
+        --dry-run antes do push real.
   archive:
     guidance:
       - Confirmar que a implementação corresponde à especificação.
+githubCopilot:
+  cloudAgent: false
