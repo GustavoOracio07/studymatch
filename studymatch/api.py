@@ -3,6 +3,7 @@
 O frontend só consome a API: as regras de negócio e as validações ficam no Xano.
 """
 import os
+import time
 
 import requests
 import streamlit as st
@@ -11,6 +12,9 @@ MSG_LIMITE = "Muitas requisições em pouco tempo. Aguarde alguns segundos e ten
 MSG_REDE = "Não foi possível falar com o servidor. Verifique sua conexão e tente de novo."
 MSG_SESSAO_EXPIRADA = "Sua sessão expirou. Entre de novo."
 MSG_SEM_CONFIGURACAO = "A variável XANO_API_URL não está configurada. Veja o README."
+
+# O plano free do Xano aceita 10 requisições a cada 20 s: após um 429, espera e tenta de novo
+ESPERAS_APOS_LIMITE = (2, 4, 8)
 
 
 class ErroAPI(Exception):
@@ -36,17 +40,22 @@ def url_base():
 
 
 class XanoAPI:
-    def __init__(self, token=None, base=None, http=None):
+    def __init__(self, token=None, base=None, http=None, esperar=time.sleep):
         self.token = token
         self.base = (base or url_base()).rstrip("/")
         self._http = http or requests
+        self._esperar = esperar
 
     def _req(self, metodo, caminho, **kwargs):
         headers = {"Authorization": f"Bearer {self.token}"} if self.token else {}
-        try:
-            r = self._http.request(metodo, self.base + caminho, headers=headers, timeout=20, **kwargs)
-        except requests.RequestException as e:
-            raise ErroAPI(MSG_REDE) from e
+        for espera in (*ESPERAS_APOS_LIMITE, None):
+            try:
+                r = self._http.request(metodo, self.base + caminho, headers=headers, timeout=20, **kwargs)
+            except requests.RequestException as e:
+                raise ErroAPI(MSG_REDE) from e
+            if r.status_code != 429 or espera is None:
+                break
+            self._esperar(espera)
 
         if r.status_code == 429:
             raise ErroAPI(MSG_LIMITE, 429)
@@ -71,6 +80,26 @@ class XanoAPI:
 
     def eu(self):
         return self._req("GET", "/auth/me")
+
+    # --- perfil
+    def atualizar_perfil(self, dados):
+        return self._req("PATCH", "/auth/me", json=dados)
+
+    def minhas_disciplinas(self):
+        return self._req("GET", "/usuario_disciplina")
+
+    def definir_disciplinas(self, disciplina_ids):
+        return self._req("PUT", "/minhas_disciplinas", json={"disciplina_ids": list(disciplina_ids)})
+
+    def minhas_disponibilidades(self):
+        return self._req("GET", "/disponibilidade")
+
+    def adicionar_disponibilidade(self, dia_semana, hora_inicio, hora_fim):
+        return self._req("POST", "/disponibilidade",
+                         json={"dia_semana": dia_semana, "hora_inicio": hora_inicio, "hora_fim": hora_fim})
+
+    def apagar_disponibilidade(self, disponibilidade_id):
+        return self._req("DELETE", f"/disponibilidade/{disponibilidade_id}")
 
     # --- catálogo (público)
     def cursos(self):
