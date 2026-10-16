@@ -1,15 +1,18 @@
-// Add Match_interesse record
+// Add a Match_interesse record from the authenticated user to another student
 query match_interesse verb=POST {
   api_group = "Authentication"
+  auth = "user"
 
   input {
-    dblink {
-      table = "Match_interesse"
+    int usuario_alvo_id {
+      table = "user"
     }
+  
+    int percentual_compatibilidade
   }
 
   stack {
-    precondition ($input.usuario_id != $input.usuario_alvo_id) {
+    precondition ($input.usuario_alvo_id != $auth.id) {
       error_type = "inputerror"
       error = "Você não pode dar match em si mesmo"
     }
@@ -19,9 +22,15 @@ query match_interesse verb=POST {
       error = "O percentual deve estar entre 0 e 100"
     }
   
+    // The origin is always the authenticated user and every new interest starts as pending
     db.add Match_interesse {
-      enforce_hidden_fields = false
-      data = {created_at: "now"}
+      data = {
+        created_at                : "now"
+        usuario_id                : $auth.id
+        usuario_alvo_id           : $input.usuario_alvo_id
+        percentual_compatibilidade: $input.percentual_compatibilidade
+        status                    : "pendente"
+      }
     } as $match_interesse
   }
 

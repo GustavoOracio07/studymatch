@@ -1,6 +1,7 @@
 // Use this endpoint to send a welcome email to a user
 query "message/send_welcome_email" verb=POST {
   api_group = "Authentication"
+  auth = "user"
 
   input {
     // The ID of the user to send the welcome email to.
@@ -8,6 +9,12 @@ query "message/send_welcome_email" verb=POST {
   }
 
   stack {
+    // A user can only trigger the welcome email for their own account
+    precondition ($input.user_id == $auth.id) {
+      error_type = "accessdenied"
+      error = "Você só pode enviar o e-mail de boas-vindas para a sua própria conta."
+    }
+  
     // Retrieve the user record for the given user ID.
     db.get user {
       field_name = "id"

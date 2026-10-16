@@ -12,25 +12,25 @@ query "auth/login" verb=POST {
     db.get user {
       field_name = "email"
       field_value = $input.email
-      output = ["id", "created_at", "name", "email", "password", "role"]
+      output = ["id", "created_at", "Name", "email", "Password", "role"]
     } as $user
   
     // Check to make sure a user with that email exists
     precondition ($user != null) {
       error_type = "accessdenied"
-      error = "Invalid Credentials."
+      error = "E-mail ou senha inválidos."
     }
   
     // Check that the password matches the hashed password
     security.check_password {
       text_password = $input.password
-      hash_password = $user.password
+      hash_password = $user.Password
     } as $pass_result
   
     // Verify that the password check passed
     precondition ($pass_result) {
       error_type = "accessdenied"
-      error = "Invalid Credentials."
+      error = "E-mail ou senha inválidos."
     }
   
     // Create an authentication token
@@ -41,9 +41,13 @@ query "auth/login" verb=POST {
       id = $user.id
     } as $authToken
   
-    // Create an event log for login
+    // Create an event log for login (never log the password hash)
     function.run "Quick Start/log_event" {
-      input = {user_id: $user.id, action: "login", metadata: $user}
+      input = {
+        user_id : $user.id
+        action  : "login"
+        metadata: {email: $user.email}
+      }
     } as $event_log
   }
 
