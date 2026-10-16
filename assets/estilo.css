@@ -56,6 +56,9 @@ section[data-testid="stSidebar"][aria-expanded="true"] {
 /* --- Faixa de boas-vindas no topo das páginas --- */
 .st-key-hero {
   background: linear-gradient(100deg, #E3E7FF 0%, #EDEFFF 55%, #F5F6FD 100%);
+  /* vai até as bordas da área principal (compensa o padding de 2rem) */
+  width: calc(100% + 4rem) !important;
+  max-width: none !important;
   margin: 0 -2rem 1.5rem;
   padding: 2.4rem 2rem 1.6rem;
   border-bottom: 1px solid #E6E8F5;
@@ -280,4 +283,10 @@ section[data-testid="stSidebar"][aria-expanded="true"] {
 [data-testid="stNumberInputContainer"] input,
 [data-testid="stNumberInputContainer"] button {
   background: #FFFFFF;
+}
+
+/* Botão de tema no menu lateral */
+.st-key-alternar_tema button {
+  width: 100%;
+  justify-content: flex-start;
 }

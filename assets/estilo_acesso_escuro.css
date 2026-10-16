@@ -1,0 +1,63 @@
+/* Telas de acesso no modo escuro. Carregado depois de estilo_acesso.css. */
+
+.stApp {
+  background: #0F1220 !important;
+}
+.sm-painel {
+  background: #070D17;
+}
+.st-key-cartao_acesso {
+  background: #181C2C !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+.st-key-cartao_acesso [data-testid="stForm"] {
+  background: transparent !important;
+}
+.st-key-cartao_acesso [data-testid="stTextInputRootElement"],
+.st-key-cartao_acesso [data-testid="stTextAreaRootElement"],
+.st-key-cartao_acesso [data-testid="stSelectbox"] > div > div {
+  border-color: #3A4158 !important;
+}
+.sm-acesso-titulo,
+.sm-acesso-titulo span,
+.st-key-cartao_acesso p.sm-acesso-sub {
+  color: #E5E7EB;
+}
+.sm-acesso-titulo svg {
+  color: #A99BFF;
+}
+
+/* Destaques em roxo no lugar do azul-marinho */
+.st-key-cartao_acesso [data-testid="stBaseButton-primaryFormSubmit"],
+.st-key-cartao_acesso [data-testid="stBaseButton-primary"] {
+  background: #5B3FE4;
+}
+.st-key-cartao_acesso [data-testid="stBaseButton-primaryFormSubmit"]:hover,
+.st-key-cartao_acesso [data-testid="stBaseButton-primary"]:hover {
+  background: #4A30CF;
+}
+.st-key-cartao_acesso button[data-testid="stBaseButton-tertiaryFormSubmit"],
+.st-key-cartao_acesso button[data-testid="stBaseButton-tertiaryFormSubmit"] p,
+.st-key-cartao_acesso button[data-testid="stBaseButton-tertiaryFormSubmit"] span {
+  color: #C4B9FF;
+}
+.sm-etapa {
+  background: #181C2C;
+  border-color: #3A4158;
+  color: #C9CEDA;
+}
+.sm-etapa-atual {
+  border-color: #5B3FE4;
+  color: #C4B9FF;
+}
+.sm-etapa-feita {
+  background: #5B3FE4;
+  border-color: #5B3FE4;
+  color: #FFFFFF;
+}
+.sm-traco {
+  background: #3A4158;
+}
+.sm-traco-feito {
+  background: #5B3FE4;
+}

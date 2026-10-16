@@ -11,6 +11,10 @@ header[data-testid="stHeader"] {
   padding: 0 !important;
   max-width: 100% !important;
 }
+/* O botão de tema é fixo no canto: não deixa espaço no topo */
+[data-testid="stMainBlockContainer"] > [data-testid="stVerticalBlock"] {
+  gap: 0 !important;
+}
 
 /* Painel escuro */
 .sm-painel {
@@ -105,6 +109,13 @@ header[data-testid="stHeader"] {
   align-items: center;
   padding: 2rem 1rem;
 }
+/* Logo e cartão centralizados no painel claro */
+.st-key-lado_form > div {
+  width: 100%;
+  max-width: 430px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .sm-logo-circulo {
   display: flex;
   justify-content: center;
@@ -113,6 +124,8 @@ header[data-testid="stHeader"] {
 .st-key-cartao_acesso {
   width: 100%;
   max-width: 430px;
+  margin-left: auto !important;
+  margin-right: auto !important;
   background: #FFFFFF;
   border: none;
   border-radius: 18px;
@@ -212,4 +225,13 @@ header[data-testid="stHeader"] {
 @media (max-width: 640px) {
   .sm-painel { display: none; }
   .st-key-lado_form { min-height: auto; padding-top: 1.5rem; }
+}
+
+/* Botão de tema no canto superior direito das telas de acesso */
+.st-key-tema_acesso {
+  position: fixed;
+  top: 1rem;
+  right: 1.2rem;
+  z-index: 1000;
+  width: auto !important;
 }

@@ -54,6 +54,7 @@ python tests/frontend/teste_telas_base.py    # login, cadastro e logout
 python tests/frontend/teste_telas_perfil.py
 python tests/frontend/teste_telas_busca.py
 python tests/frontend/teste_telas_matches.py
+python tests/frontend/teste_telas_tema.py     # modo claro/escuro
 ```
 
 Por padrão, os testes usam a API do projeto. Para apontar para outra, defina `XANO_API_URL`.

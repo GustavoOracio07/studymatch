@@ -9,6 +9,7 @@ import streamlit as st
 
 ASSETS = pathlib.Path(__file__).resolve().parents[1] / "assets"
 LOGO = str(ASSETS / "logo.svg")
+LOGO_ESCURO = str(ASSETS / "logo_escuro.svg")
 LOGO_ICONE = str(ASSETS / "logo_icone.svg")
 
 _ICONES = {
@@ -39,12 +40,32 @@ def html_(conteudo, onde=st):
     onde.markdown(conteudo, unsafe_allow_html=True)
 
 
+TEMA_ESCURO = "tema_escuro"
+
+
+def tema_escuro():
+    return bool(st.session_state.get(TEMA_ESCURO))
+
+
 def aplicar_estilo():
     st.html(ASSETS / "estilo.css")
+    if tema_escuro():
+        st.html(ASSETS / "estilo_escuro.css")
 
 
 def aplicar_estilo_acesso():
     st.html(ASSETS / "estilo_acesso.css")
+    if tema_escuro():
+        st.html(ASSETS / "estilo_acesso_escuro.css")
+
+
+def botao_tema(onde=st):
+    """Alterna entre modo claro e escuro. A escolha fica na sessão e vale para todas as páginas."""
+    escuro = tema_escuro()
+    if onde.button("Modo claro" if escuro else "Modo escuro", key="alternar_tema",
+                   icon=":material/light_mode:" if escuro else ":material/dark_mode:"):
+        st.session_state[TEMA_ESCURO] = not escuro
+        st.rerun()
 
 
 def icone(nome, tamanho=15):

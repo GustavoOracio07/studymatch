@@ -1,5 +1,22 @@
 # Spec Delta
 
+## ADDED Requirements
+
+### Requirement: Modo claro e modo escuro
+O app SHALL ter um botão para alternar entre modo claro e modo escuro — no menu lateral para o aluno logado e no canto da tela em "Entrar" e "Criar conta". A escolha SHALL valer em todas as páginas da sessão, inclusive depois de sair da conta.
+
+#### Scenario: Ativar o modo escuro
+- **WHEN** o aluno clica em "Modo escuro"
+- **THEN** a interface passa a usar fundo escuro com destaques em roxo e o botão passa a se chamar "Modo claro"
+
+#### Scenario: Trocar de página
+- **WHEN** o modo escuro está ativo e o aluno abre outra página do menu
+- **THEN** a nova página também aparece no modo escuro
+
+#### Scenario: Sair da conta
+- **WHEN** o modo escuro está ativo e o aluno clica em "Sair"
+- **THEN** a tela "Entrar" aparece no modo escuro
+
 ## MODIFIED Requirements
 
 ### Requirement: Navegação conforme o login

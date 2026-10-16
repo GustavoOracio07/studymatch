@@ -40,7 +40,7 @@ check("abas com contagem", [t.label for t in at.tabs] == ["Recebidos (2)", "Envi
 check("nenhum telefone antes do match", all(tel not in tudo(at) for tel in (tel_b, tel_c, tel_d)), tudo(at))
 
 at.button(key=f"aceitar_{mi_ba}").click().run()
-check("aceitar mostra confirmação", "Match confirmado com Teste!" in tudo(at), tudo(at))
+check("aceitar mostra confirmação", "Match confirmado com Teste!" in tudo(at), str([e.value for e in at.error]) + str(at.exception))
 check("aceito vai para Confirmados com telefone", f"Telefone: {tel_b}" in tudo(at)
       and [t.label for t in at.tabs][2] == "Confirmados (1)", tudo(at))
 
