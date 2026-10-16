@@ -1,0 +1,15 @@
+# Blueprint do Render: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: studymatch
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    healthCheckPath: /_stcore/health
+    autoDeployTrigger: commit
+    envVars:
+      # URL base do grupo de API "Authentication" do Xano (https://<instancia>.xano.io/api:<canonical>).
+      # Preenchida no painel do Render na criação do serviço; não fica versionada.
+      - key: XANO_API_URL
+        sync: false
