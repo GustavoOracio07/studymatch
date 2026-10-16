@@ -2,20 +2,23 @@ import datetime as dt
 
 import streamlit as st
 
-from studymatch import sessao
+from studymatch import sessao, visual
 from studymatch.api import ErroAPI, listar_cursos, listar_disciplinas
 from studymatch.dominio import DIAS_SEMANA as DIAS
 from studymatch.dominio import descrever_horario
 
-st.title("Meu perfil")
+with visual.hero():
+    st.title("Meu perfil")
+    st.markdown("Mantenha suas disciplinas e horários em dia para receber sugestões melhores.")
 api = sessao.api()
 
 try:
-    aluno = sessao.aluno_atual()
-    cursos = listar_cursos()
-    disciplinas = listar_disciplinas()
-    minhas_disciplinas = sessao.dados_da_sessao("minhas_disciplinas", api.minhas_disciplinas)
-    minhas_disponibilidades = sessao.dados_da_sessao("minhas_disponibilidades", api.minhas_disponibilidades)
+    with st.spinner("Carregando..."):
+        aluno = sessao.aluno_atual()
+        cursos = listar_cursos()
+        disciplinas = listar_disciplinas()
+        minhas_disciplinas = sessao.dados_da_sessao("minhas_disciplinas", api.minhas_disciplinas)
+        minhas_disponibilidades = sessao.dados_da_sessao("minhas_disponibilidades", api.minhas_disponibilidades)
 except ErroAPI as e:
     sessao.mostrar_erro(e)
     st.stop()
@@ -42,7 +45,8 @@ with aba_dados:
                                  help="Só aparece para quem tiver um match confirmado com você.")
         col3, col4 = st.columns([3, 1])
         curso = col3.selectbox("Curso *", options=nomes_cursos,
-                               index=nomes_cursos.index(curso_atual) if curso_atual in nomes_cursos else None)
+                               index=nomes_cursos.index(curso_atual) if curso_atual in nomes_cursos else None,
+                               placeholder="Escolha o seu curso")
         semestre = col4.number_input("Semestre *", min_value=1, max_value=12, value=aluno.get("Semestre") or 1, step=1)
         sobre_mim = st.text_area("Sobre mim", value=aluno.get("Sobre_mim") or "")
         st.caption("Se você trocar de curso, suas disciplinas de dificuldade serão removidas.")
@@ -83,7 +87,8 @@ with aba_disciplinas:
     else:
         with st.form("disciplinas"):
             escolhidas = st.multiselect("Disciplinas em que tenho dificuldade", options=list(id_por_disciplina),
-                                        default=atuais, placeholder="Escolha uma ou mais disciplinas")
+                                        default=atuais, placeholder="Escolha uma ou mais disciplinas",
+                                        select_all=False)
             salvar_disciplinas = st.form_submit_button("Salvar disciplinas", type="primary")
 
         if salvar_disciplinas:
@@ -105,7 +110,8 @@ with aba_disponibilidade:
     if not faixas:
         st.info("Você ainda não cadastrou horários disponíveis.")
     for faixa in faixas:
-        col_texto, col_botao = st.columns([4, 1], vertical_alignment="center")
+        cartao_faixa = st.container(key=f"cartao_faixa_{faixa['id']}")
+        col_texto, col_botao = cartao_faixa.columns([4, 1], vertical_alignment="center")
         col_texto.write(descrever_horario(faixa))
         if col_botao.button("Remover", key=f"remover_disp_{faixa['id']}", icon=":material/delete:"):
             try:

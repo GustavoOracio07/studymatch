@@ -1,4 +1,4 @@
-"""Testes da página Buscar colegas com streamlit.testing (AppTest) contra a API do Xano.
+"""Testes da busca de colegas (página Início) com streamlit.testing (AppTest) contra a API do Xano.
 
 Cria alunos de teste e apaga todos no final.
 Uso: python tests/frontend/teste_telas_busca.py
@@ -26,7 +26,6 @@ def abrir_busca(token):
     at = AppTest.from_file(str(RAIZ / "app.py"), default_timeout=90)
     at.session_state["token"] = token
     at.run()
-    at.switch_page("paginas/buscar.py").run()
     return at
 
 
@@ -43,14 +42,15 @@ td, idd = aluno_com_disciplinas("telabuscad", [])
 req("POST", "/match_interesse", tc, json={"usuario_alvo_id": ida})  # C já quer estudar com A
 
 at = abrir_busca(ta)
-check("abre Buscar colegas", any(t.value == "Buscar colegas" for t in at.title), textos(at))
-check("mostra o percentual", any(m.label == "Compatibilidade" and m.value == "60%" for m in at.metric),
-      str([(m.label, m.value) for m in at.metric]))
+check("Início mostra os colegas compatíveis", any("Pessoas compatíveis com você" in m.value for m in at.markdown),
+      textos(at))
+check("mostra o selo de compatibilidade", any("60% de compatibilidade" in m.value for m in at.markdown),
+      str([m.value for m in at.markdown]))
 check("mostra as disciplinas em comum", any("Projeto de Banco de Dados" in m.value for m in at.markdown),
       str([m.value for m in at.markdown]))
 
 at.button(key=f"interesse_{idb}").click().run()
-check("Tenho interesse mostra confirmação", "Interesse enviado para Teste." in textos(at), textos(at))
+check("Dar match mostra confirmação", "Interesse enviado para Teste." in textos(at), textos(at))
 check("cartão passa a mostrar Interesse enviado", "Interesse enviado. Aguardando resposta." in textos(at), textos(at))
 r = req("GET", "/match_interesse", tb)
 check("interesse gravado no Xano", any(m["usuario_id"] == ida and m["status"] == "pendente" for m in r.json()), r.text)

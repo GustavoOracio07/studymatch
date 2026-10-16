@@ -1,0 +1,237 @@
+/* Telas de acesso (Entrar e Criar conta): painel escuro à esquerda e cartão à direita. */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Source+Serif+4:wght@600;700&display=swap');
+
+.stApp {
+  background: #C3D5E2;
+}
+header[data-testid="stHeader"] {
+  display: none;
+}
+[data-testid="stMainBlockContainer"] {
+  padding: 0 !important;
+  max-width: 100% !important;
+}
+/* O botão de tema é fixo no canto: não deixa espaço no topo */
+[data-testid="stMainBlockContainer"] > [data-testid="stVerticalBlock"] {
+  gap: 0 !important;
+}
+
+/* Painel escuro */
+.sm-painel {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  background: #0A1A29;
+  color: #FFFFFF;
+  padding: 2rem 2.6rem 3.5rem;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Roboto', sans-serif;
+}
+.sm-painel p {
+  font-family: 'Roboto', sans-serif;
+}
+.sm-painel::before,
+.sm-painel::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.035);
+}
+.sm-painel::before {
+  width: 420px;
+  height: 420px;
+  top: -190px;
+  left: -170px;
+}
+.sm-painel::after {
+  width: 460px;
+  height: 460px;
+  bottom: -200px;
+  right: -150px;
+}
+.sm-impacta {
+  line-height: 1;
+}
+.sm-impacta-fac {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.55em;
+  margin-bottom: 0.2rem;
+}
+.sm-impacta-nome {
+  font-weight: 900;
+  font-size: 1.45rem;
+  letter-spacing: 0.04em;
+  font-style: italic;
+}
+.sm-bv {
+  margin-top: 9vh;
+}
+.sm-painel p.sm-bv-1 {
+  font-weight: 300;
+  font-size: 1.95rem;
+  margin: 0;
+  line-height: 1.3;
+}
+.sm-painel p.sm-bv-2 {
+  font-weight: 500;
+  font-size: 1.95rem;
+  margin: 0.35rem 0 1.4rem;
+  line-height: 1.3;
+}
+.sm-painel p.sm-tagline {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 600;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  max-width: 340px;
+}
+.sm-tagline b {
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0 0.2rem;
+}
+.sm-painel p.sm-rodape {
+  margin-top: auto;
+  margin-bottom: 6vh;
+  color: #C7D1DB;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 360px;
+  position: relative;
+}
+
+/* Lado do formulário */
+.st-key-lado_form {
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+/* Logo e cartão centralizados no painel claro */
+.st-key-lado_form > div {
+  width: 100%;
+  max-width: 430px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.sm-logo-circulo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.4rem;
+}
+.st-key-cartao_acesso {
+  width: 100%;
+  max-width: 430px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  background: #FFFFFF;
+  border: none;
+  border-radius: 18px;
+  padding: 1.6rem 2rem 1.8rem;
+  box-shadow: 0 12px 32px rgba(15, 37, 56, 0.12);
+}
+.st-key-cartao_acesso [data-testid="stForm"] {
+  border: none;
+  padding: 0;
+}
+.st-key-cartao_acesso [data-testid="stTextInput"] input,
+.st-key-cartao_acesso [data-testid="stTextArea"] textarea {
+  min-height: 46px;
+  font-size: 0.95rem;
+}
+.st-key-cartao_acesso [data-testid="stTextInputRootElement"],
+.st-key-cartao_acesso [data-testid="stTextAreaRootElement"],
+.st-key-cartao_acesso [data-testid="stSelectbox"] > div > div {
+  border: 1px solid #8C939D !important;
+  border-color: #8C939D;
+  border-radius: 6px;
+}
+.st-key-cartao_acesso [data-testid="stBaseButton-primaryFormSubmit"],
+.st-key-cartao_acesso [data-testid="stBaseButton-primary"] {
+  background: #1B3A57;
+  min-height: 42px;
+  padding: 0 1.6rem;
+}
+.st-key-cartao_acesso [data-testid="stBaseButton-primaryFormSubmit"]:hover,
+.st-key-cartao_acesso [data-testid="stBaseButton-primary"]:hover {
+  background: #142D44;
+}
+.st-key-cartao_acesso button[data-testid="stBaseButton-tertiaryFormSubmit"],
+.st-key-cartao_acesso button[data-testid="stBaseButton-tertiaryFormSubmit"] p,
+.st-key-cartao_acesso button[data-testid="stBaseButton-tertiaryFormSubmit"] span {
+  color: #1B3A57;
+  font-weight: 500;
+}
+
+/* Etapas do cadastro */
+.sm-etapas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.2rem 0 1.4rem;
+}
+.sm-etapa {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #D5D9DF;
+  color: #374151;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+}
+.sm-etapa-atual {
+  border-color: #1B3A57;
+  color: #1B3A57;
+}
+.sm-etapa-feita {
+  border-color: #1B3A57;
+  background: #1B3A57;
+  color: #FFFFFF;
+}
+.sm-traco {
+  width: 34px;
+  height: 2px;
+  background: #D5D9DF;
+  margin: 0 0.25rem;
+}
+.sm-traco-feito {
+  background: #1B3A57;
+}
+.sm-acesso-titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #1F2937;
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 0.15rem;
+}
+.sm-acesso-titulo svg {
+  color: #1B3A57;
+}
+.st-key-cartao_acesso p.sm-acesso-sub {
+  font-size: 0.8rem;
+  color: #374151;
+  margin: 0 0 0.6rem 1.9rem;
+}
+
+/* No celular, só o cartão */
+@media (max-width: 640px) {
+  .sm-painel { display: none; }
+  .st-key-lado_form { min-height: auto; padding-top: 1.5rem; }
+}
+
+/* Botão de tema no canto superior direito das telas de acesso */
+.st-key-tema_acesso {
+  position: fixed;
+  top: 1rem;
+  right: 1.2rem;
+  z-index: 1000;
+  width: auto !important;
+}

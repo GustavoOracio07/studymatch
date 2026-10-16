@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="190" height="36" viewBox="0 0 190 36">
+  <g fill="none" stroke="#5B3FE4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" transform="translate(2 4)">
+    <path d="M28 11 14 4 0 11l14 7 14-7z" fill="#5B3FE4"/>
+    <path d="M5.5 14v7c4 4 13 4 17 0v-7"/>
+    <path d="M28 11v8"/>
+  </g>
+  <text x="40" y="25" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="19" font-weight="700" fill="#1F2937">StudyMatch</text>
+</svg>

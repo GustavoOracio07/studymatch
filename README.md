@@ -13,8 +13,9 @@ Projeto Integrador — Innovation Lab: Advanced No/Low Code — ADS, Faculdade I
 
 ```text
 app.py                 ponto de entrada (navegação conforme o login)
-paginas/               telas: entrar, cadastro, início, perfil, buscar, matches, sair
-studymatch/            cliente da API do Xano (api.py), sessão (sessao.py) e rótulos (dominio.py)
+paginas/               telas: entrar, cadastro (3 etapas), início (busca de colegas), matches, perfil, sair
+studymatch/            cliente da API (api.py), sessão (sessao.py), rótulos (dominio.py) e visual (visual.py)
+assets/                CSS e logos do tema (referência: protótipo no Figma)
 tests/api/             testes de API contra o Xano
 tests/frontend/        testes do cliente (offline) e das telas (AppTest)
 xano/                  workspace do Xano em XanoScript (sincronizado com o Xano CLI)
@@ -53,6 +54,7 @@ python tests/frontend/teste_telas_base.py    # login, cadastro e logout
 python tests/frontend/teste_telas_perfil.py
 python tests/frontend/teste_telas_busca.py
 python tests/frontend/teste_telas_matches.py
+python tests/frontend/teste_telas_tema.py     # modo claro/escuro
 ```
 
 Por padrão, os testes usam a API do projeto. Para apontar para outra, defina `XANO_API_URL`.

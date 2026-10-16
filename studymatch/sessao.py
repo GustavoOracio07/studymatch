@@ -19,7 +19,10 @@ def entrar(token):
 
 
 def sair(aviso=None):
+    tema_escuro = st.session_state.get("tema_escuro")  # preferência visual sobrevive ao logout
     st.session_state.clear()
+    if tema_escuro:
+        st.session_state["tema_escuro"] = tema_escuro
     if aviso:
         st.session_state["aviso"] = aviso
 

@@ -6,15 +6,15 @@ Define a interface web em Streamlit do StudyMatch: como o aluno navega, entra, c
 ## Requirements
 
 ### Requirement: Navegação conforme o login
-O app SHALL mostrar apenas as páginas "Entrar" e "Criar conta" para visitantes, e as páginas do aluno (incluindo "Sair") para quem está logado.
+O app SHALL mostrar apenas as páginas "Entrar" e "Criar conta" para visitantes, sem menu lateral, e para quem está logado o menu lateral SHALL ter "Início", "Meus matches", "Meu perfil" e "Sair".
 
 #### Scenario: Visitante abre o app
 - **WHEN** um visitante sem sessão abre o app
-- **THEN** a página "Entrar" é exibida e as páginas do aluno não aparecem no menu
+- **THEN** a página "Entrar" é exibida com o painel "Bem-vindo ao StudyMatch" e as páginas do aluno não aparecem
 
 #### Scenario: Aluno logado abre o app
 - **WHEN** um aluno com token na sessão abre o app
-- **THEN** a página "Início" é exibida com a saudação "Olá, <nome>!" e o menu mostra "Sair"
+- **THEN** a página "Início" é exibida com a saudação "Olá, <nome>!" e o menu mostra "Início", "Meus matches", "Meu perfil" e "Sair"
 
 ### Requirement: Login pela interface
 O app SHALL permitir entrar com e-mail e senha e guardar o token na sessão do navegador.
@@ -32,15 +32,23 @@ O app SHALL permitir entrar com e-mail e senha e guardar o token na sessão do n
 - **THEN** o app pede para preencher os campos e não chama a API
 
 ### Requirement: Cadastro pela interface
-O app SHALL permitir criar a conta escolhendo o curso em uma lista vinda da API e SHALL entrar automaticamente após o cadastro.
+O app SHALL permitir criar a conta em 3 etapas — (1) nome e sobrenome, (2) senha, confirmação da senha e e-mail, (3) curso, semestre, telefone e sobre mim — escolhendo o curso em uma lista vinda da API, e SHALL entrar automaticamente após o cadastro. A API SHALL ser chamada só na última etapa.
 
 #### Scenario: Cadastro bem-sucedido
-- **WHEN** o visitante preenche todos os campos obrigatórios e clica em "Criar conta"
+- **WHEN** o visitante preenche as 3 etapas e clica em "Criar conta"
 - **THEN** a conta é criada, o token é guardado na sessão e o aluno é levado à página "Início"
+
+#### Scenario: Senhas diferentes
+- **WHEN** a senha e a confirmação da etapa 2 são diferentes
+- **THEN** o app mostra "As senhas não conferem." e continua na etapa 2
+
+#### Scenario: Voltar uma etapa
+- **WHEN** o visitante clica em "Voltar"
+- **THEN** a etapa anterior é exibida com os dados já digitados
 
 #### Scenario: Telefone já cadastrado
 - **WHEN** o visitante usa um telefone que já pertence a outro aluno
-- **THEN** o app mostra "Este telefone já está cadastrado." e continua na página "Criar conta"
+- **THEN** o app mostra "Este telefone já está cadastrado." e continua na etapa 3
 
 ### Requirement: Logout
 O app SHALL permitir sair, descartando o token da sessão.
@@ -59,3 +67,18 @@ O app SHALL tratar a sessão expirada e as falhas da API sem quebrar a tela.
 #### Scenario: Limite de requisições
 - **WHEN** a API responde 429
 - **THEN** o app mostra "Muitas requisições em pouco tempo. Aguarde alguns segundos e tente de novo."
+
+### Requirement: Modo claro e modo escuro
+O app SHALL ter um botão para alternar entre modo claro e modo escuro — no menu lateral para o aluno logado e no canto da tela em "Entrar" e "Criar conta". A escolha SHALL valer em todas as páginas da sessão, inclusive depois de sair da conta.
+
+#### Scenario: Ativar o modo escuro
+- **WHEN** o aluno clica em "Modo escuro"
+- **THEN** a interface passa a usar fundo escuro com destaques em roxo e o botão passa a se chamar "Modo claro"
+
+#### Scenario: Trocar de página
+- **WHEN** o modo escuro está ativo e o aluno abre outra página do menu
+- **THEN** a nova página também aparece no modo escuro
+
+#### Scenario: Sair da conta
+- **WHEN** o modo escuro está ativo e o aluno clica em "Sair"
+- **THEN** a tela "Entrar" aparece no modo escuro

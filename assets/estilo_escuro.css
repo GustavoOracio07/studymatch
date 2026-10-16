@@ -1,0 +1,174 @@
+/* Modo escuro do StudyMatch: fundo escuro, roxo #5B3FE4 nos destaques. Carregado depois de estilo.css. */
+
+:root {
+  --sm-texto: #F3F4F6;
+  --sm-cinza: #A1A8B8;
+  --sm-borda: #2C3245;
+  --sm-roxo-claro: #2A2457;
+  --sm-fundo: #0F1220;
+  --sm-cartao: #181C2C;
+  --sm-campo: #1F2436;
+}
+
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"] {
+  background: var(--sm-fundo) !important;
+  color: var(--sm-texto);
+}
+section[data-testid="stSidebar"],
+section[data-testid="stSidebar"] > div {
+  background: #131726 !important;
+  border-color: var(--sm-borda) !important;
+}
+
+/* Texto em geral */
+.stApp h1, .stApp h2, .stApp h3, .stApp h4,
+.stApp p, .stApp li, .stApp label, .stApp span,
+[data-testid="stMarkdownContainer"],
+[data-testid="stWidgetLabel"] p,
+[role="dialog"] p, [role="dialog"] li, [role="dialog"] h2, [role="dialog"] span {
+  color: var(--sm-texto);
+}
+[data-testid="stCaptionContainer"],
+[data-testid="stCaptionContainer"] p,
+.sm-sobre-texto, .sm-linha, .sm-resumo-valor, .sm-item-perfil span.sm-cinza {
+  color: var(--sm-cinza) !important;
+}
+.sm-linha svg { color: var(--sm-cinza); }
+.sm-nome, .sm-sobre-titulo, .sm-resumo-rotulo, .sm-item-perfil, .sm-titulo-secao {
+  color: var(--sm-texto);
+}
+.stApp a, .sm-destaque, .sm-destaque span { color: #A99BFF !important; }
+
+/* Menu lateral */
+[data-testid="stSidebarNavLink"] span { color: #C9CEDA; }
+[data-testid="stSidebarNavLink"][aria-current="page"] { background: var(--sm-roxo-claro); }
+[data-testid="stSidebarNavLink"][aria-current="page"] span { color: #C4B9FF; }
+[data-testid="stSidebarNavLink"]:hover { background: #1E2335; }
+
+/* Faixa do topo */
+.st-key-hero {
+  background: linear-gradient(100deg, #241D52 0%, #1D1A3D 55%, #151829 100%);
+  border-bottom-color: var(--sm-borda);
+}
+.st-key-hero p { color: #C9CEDA; }
+
+/* Cartões e formulários */
+[class*="st-key-cartao_"],
+.st-key-painel_perfil,
+[data-testid="stForm"],
+[role="dialog"] {
+  background: var(--sm-cartao) !important;
+  border-color: var(--sm-borda) !important;
+  box-shadow: none;
+}
+.sm-perfil-topo { border-color: var(--sm-borda); }
+.sm-item-perfil { border-top-color: var(--sm-borda); }
+.sm-barra { background: var(--sm-borda); }
+.stApp .sm-contador { background: #262C40; color: #C9CEDA; }
+.stApp .sm-selo-verde { background: #12372A; color: #6EE7A8; }
+.stApp .sm-selo-amarelo { background: #3A2F0E; color: #FCD34D; }
+.stApp .sm-selo-laranja { background: #3D2210; color: #FDBA74; }
+.stApp .sm-ok, .stApp .sm-ok svg { color: #4ADE80; }
+
+/* Campos */
+[data-testid="stTextInputRootElement"],
+[data-testid="stTextInputRootElement"] input,
+[data-testid="stTextAreaRootElement"],
+[data-testid="stTextAreaRootElement"] textarea,
+[data-testid="stNumberInputContainer"],
+[data-testid="stNumberInputContainer"] input,
+[data-testid="stNumberInputContainer"] button,
+[data-testid="stTimeInput"] input,
+[data-baseweb="select"] > div,
+[data-baseweb="input"],
+[data-baseweb="base-input"] {
+  background: var(--sm-campo) !important;
+  color: var(--sm-texto) !important;
+  border-color: #353C52 !important;
+}
+.stApp input::placeholder,
+.stApp textarea::placeholder { color: #7D8496 !important; }
+[data-baseweb="select"] svg,
+[data-testid="stNumberInputContainer"] svg { color: var(--sm-cinza); fill: var(--sm-cinza); }
+[data-baseweb="tag"] { background: var(--sm-roxo-claro) !important; }
+[data-baseweb="tag"] span { color: #E4DEFF !important; }
+input:disabled { color: #8B92A3 !important; -webkit-text-fill-color: #8B92A3; }
+
+/* Listas suspensas (ficam fora do .stApp) */
+[data-baseweb="popover"] ul,
+[data-baseweb="popover"] li,
+[data-baseweb="popover"] [role="listbox"],
+[data-baseweb="menu"] {
+  background: var(--sm-campo) !important;
+  color: var(--sm-texto) !important;
+}
+[data-baseweb="popover"] li:hover,
+[data-baseweb="popover"] li[aria-selected="true"] { background: #2A3046 !important; }
+
+/* Botões */
+[data-testid="stBaseButton-secondary"],
+[data-testid="stBaseButton-secondaryFormSubmit"] {
+  background: #1F2436 !important;
+  border-color: #3A4158 !important;
+  color: var(--sm-texto) !important;
+}
+[data-testid="stBaseButton-secondary"] p,
+[data-testid="stBaseButton-secondaryFormSubmit"] p { color: var(--sm-texto); }
+[data-testid="stBaseButton-secondary"]:hover { border-color: #5B3FE4 !important; }
+[data-testid="stBaseButton-primary"] p,
+[data-testid="stBaseButton-primaryFormSubmit"] p { color: #FFFFFF; }
+[data-testid="stBaseButton-tertiary"] p,
+[data-testid="stBaseButton-tertiaryFormSubmit"] p,
+[data-testid="stPageLink"] span { color: #C4B9FF; }
+
+/* Abas, avisos e divisórias */
+[data-testid="stTabs"] [role="tablist"] { border-color: var(--sm-borda); }
+[data-testid="stTabs"] button[role="tab"] p { color: #C9CEDA; }
+[data-testid="stTabs"] button[role="tab"][aria-selected="true"] p { color: #A99BFF; }
+[data-testid="stAlert"] p { color: inherit; }
+header[data-testid="stHeader"] { background: transparent; }
+[data-testid="stSidebarCollapseButton"] svg,
+[data-testid="stExpandSidebarButton"] svg { color: #C9CEDA; }
+
+/* Caixas de seleção e listas suspensas (estrutura do Streamlit 1.64) */
+[data-testid="stSelectbox"] > div > div,
+[data-testid="stMultiSelect"] > div > div,
+[data-testid="stMultiSelectTagsContainer"] {
+  background: var(--sm-campo) !important;
+  border-color: #353C52 !important;
+  color: var(--sm-texto) !important;
+}
+[data-testid="stSelectbox"] svg,
+[data-testid="stMultiSelect"] svg { color: var(--sm-cinza); }
+[data-testid="stSelectboxVirtualDropdown"],
+[data-testid="stSelectboxVirtualDropdown"] li,
+[data-testid="stSelectboxVirtualDropdown"] [role="option"],
+[data-testid="stMultiSelectDropdown"],
+[data-testid="stMultiSelectDropdown"] [role="option"],
+[role="listbox"] {
+  background: var(--sm-campo) !important;
+  color: var(--sm-texto) !important;
+}
+[role="listbox"] [role="option"]:hover,
+[role="listbox"] [role="option"][aria-selected="true"] {
+  background: #2A3046 !important;
+}
+
+/* Campo desabilitado (e-mail no Meu perfil) legível */
+.stApp input:disabled {
+  color: #8B92A3 !important;
+  -webkit-text-fill-color: #8B92A3 !important;
+  opacity: 1;
+}
+[data-testid="stSelectbox"] input,
+[data-testid="stMultiSelect"] input {
+  color: var(--sm-texto) !important;
+  -webkit-text-fill-color: var(--sm-texto) !important;
+}
+[data-testid="stSelectboxVirtualDropdown"],
+[data-testid="stMultiSelectDropdown"],
+[role="listbox"] {
+  border-color: #353C52 !important;
+}
