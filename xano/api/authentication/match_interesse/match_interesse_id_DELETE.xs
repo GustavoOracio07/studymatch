@@ -1,12 +1,28 @@
-// Delete Match_interesse record.
+// Delete a Match_interesse record (only the origin student can withdraw the interest)
 query "match_interesse/{match_interesse_id}" verb=DELETE {
   api_group = "Authentication"
+  auth = "user"
 
   input {
     int match_interesse_id? filters=min:1
   }
 
   stack {
+    db.get Match_interesse {
+      field_name = "id"
+      field_value = $input.match_interesse_id
+    } as $match_interesse
+  
+    precondition ($match_interesse != null) {
+      error_type = "notfound"
+      error = "Interesse de match não encontrado."
+    }
+  
+    precondition ($match_interesse.usuario_id == $auth.id) {
+      error_type = "accessdenied"
+      error = "Só o aluno que enviou o interesse pode apagá-lo."
+    }
+  
     db.del Match_interesse {
       field_name = "id"
       field_value = $input.match_interesse_id

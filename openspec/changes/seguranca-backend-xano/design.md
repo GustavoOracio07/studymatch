@@ -20,8 +20,8 @@ O workspace local (`./xano`) foi conferido contra o remoto com `xano workspace p
 
 1. **Inputs explícitos no lugar de `dblink`.** Os endpoints de escrita passam a declarar só os campos que o cliente pode enviar. O `usuario_id` vem de `$auth.id`. Alternativa: manter `dblink` e sobrescrever `usuario_id`. Descartada porque deixaria o cliente mandar campos inesperados (como `status` na criação do match).
 2. **Verificação de dono com `db.get` + `precondition` (`accessdenied`, 403).** Um registro inexistente devolve 404 antes da checagem de dono. Esse é o padrão "Resource Ownership Check" da documentação do XanoScript.
-3. **Escrita de curso/disciplina restrita a `admin` com a função existente `Quick Start/enforce_role`.** Alternativa: apagar esses endpoints do workspace. Descartada por exigir `push --sync --delete`, que é destrutivo. Com a trava de papel, o resultado prático é o mesmo ("ninguém edita pelo app"), e a manutenção continua pelo painel.
-4. **Cascata com `table_trigger` na tabela `user` (ação `delete`)**, usando `db.bulk.delete` em `Disponibilidade` e `Usuario_disciplina`. O trigger cobre exclusões feitas pelo painel do Xano, que é hoje o único jeito de apagar usuário. Os registros de `Match_interesse` não entram na cascata (não foi pedido). As consultas de matches das próximas changes devem ignorar registros cujo outro aluno não existe mais.
+3. **Escrita de curso/disciplina restrita a `admin` com a nova função `StudyMatch/exigir_admin`** (`precondition` com `accessdenied`, 403). Alternativa 1: apagar esses endpoints do workspace. Descartada por exigir `push --sync --delete`, que é destrutivo. Com a trava de papel, o resultado prático é o mesmo ("ninguém edita pelo app"), e a manutenção continua pelo painel. Alternativa 2: a função `Quick Start/enforce_role`, que já existe. Descartada porque ela usa `throw` e responde 500 em vez de 403 (visto nos testes).
+4. **Cascata com a função `StudyMatch/excluir_usuario`**, que roda dentro de `db.transaction` e faz `db.bulk.delete` em `Disponibilidade` e `Usuario_disciplina` antes de apagar o `user`. A função é exposta em `DELETE /auth/me` (o aluno apaga a própria conta). A primeira opção era um `table_trigger` em `user`, mas o push foi recusado: "Triggers are only available on paid packages". Consequência: um usuário apagado direto pelo painel do Xano não tem cascata, e os registros dependentes precisam ser apagados à mão. Os registros de `Match_interesse` não entram na cascata (não foi pedido). As consultas de matches das próximas changes devem ignorar registros cujo outro aluno não existe mais.
 5. **Metadata do log:** apenas `{email}` no login/cadastro e `{}` nas rotas de redefinição de senha.
 6. **Mensagens amigáveis de duplicidade:** checar `email` e `Telefone` com `db.has` antes do `db.add` e responder `inputerror` (400) em português. O índice único continua como proteção final.
 
@@ -29,12 +29,14 @@ O workspace local (`./xano`) foi conferido contra o remoto com `xano workspace p
 
 - [Mudança de contrato nos endpoints] → Ainda não há frontend consumindo; a change 2 já usa o novo contrato.
 - [Logs antigos com hash continuam no `event_log`] → Fica registrado como ação manual (limpar ou truncar a tabela pelo painel).
-- [Trigger pode não rodar em testes isolados] → Validar também chamando o trigger diretamente em um workflow test.
+- [Plano free do Xano: 10 requisições a cada 20 s] → Os testes têm intervalo entre chamadas, e o frontend deve evitar chamadas repetidas.
+- [Exclusão pelo painel não tem cascata] → Orientar a apagar contas pelo `DELETE /auth/me` ou apagar os dependentes manualmente.
 
 ## Migration Plan
 
-1. Validar os `.xs` com o validador oficial do XanoScript.
+1. Validar os `.xs` com o validador oficial do XanoScript (pacote `@xano/developer-mcp`).
 2. `xano workspace push --dry-run` e revisão da prévia.
 3. `xano workspace push` (modo parcial, só arquivos alterados).
-4. Testar com `curl` contra a API live (roteiro em `tasks.md`).
-5. Rollback: `git revert` do commit e novo `xano workspace push`.
+4. Testar com chamadas HTTP contra a API live (roteiro em `tasks.md`).
+5. `xano workspace pull` em pasta temporária e cópia do formato canônico do servidor para `./xano`, para o local ficar idêntico ao remoto.
+6. Rollback: `git revert` do commit e novo `xano workspace push`.

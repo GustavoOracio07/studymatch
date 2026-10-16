@@ -69,8 +69,12 @@ Os endpoints de criação, edição e exclusão de `curso` e `disciplina` SHALL 
 - **THEN** o sistema responde 403 e nada é gravado
 
 ### Requirement: Exclusão em cascata do usuário
-Quando um usuário é apagado, o sistema SHALL apagar as disponibilidades e as disciplinas de dificuldade dele.
+O aluno SHALL poder apagar a própria conta com `DELETE /auth/me`, e o sistema SHALL apagar junto as disponibilidades e as disciplinas de dificuldade dele, na mesma transação.
 
-#### Scenario: Usuário apagado
-- **WHEN** um usuário com disponibilidades e disciplinas de dificuldade é apagado
-- **THEN** não resta nenhum registro de `disponibilidade` nem de `usuario_disciplina` com o `usuario_id` dele
+#### Scenario: Aluno apaga a própria conta
+- **WHEN** um aluno com disponibilidades e disciplinas de dificuldade chama `DELETE /auth/me`
+- **THEN** o sistema responde 200, o login dele passa a falhar e não resta nenhum registro de `disponibilidade` nem de `usuario_disciplina` com o `usuario_id` dele
+
+#### Scenario: Exclusão sem token
+- **WHEN** um cliente chama `DELETE /auth/me` sem token
+- **THEN** o sistema responde 401 e nada é apagado

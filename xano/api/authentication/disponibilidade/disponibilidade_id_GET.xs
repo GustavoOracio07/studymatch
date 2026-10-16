@@ -1,6 +1,7 @@
-// Get Disponibilidade record
+// Get a Disponibilidade record owned by the authenticated user
 query "disponibilidade/{disponibilidade_id}" verb=GET {
   api_group = "Authentication"
+  auth = "user"
 
   input {
     int disponibilidade_id? filters=min:1
@@ -14,7 +15,12 @@ query "disponibilidade/{disponibilidade_id}" verb=GET {
   
     precondition ($disponibilidade != null) {
       error_type = "notfound"
-      error = "Not Found."
+      error = "Disponibilidade não encontrada."
+    }
+  
+    precondition ($disponibilidade.usuario_id == $auth.id) {
+      error_type = "accessdenied"
+      error = "Você só pode acessar as suas próprias disponibilidades."
     }
   }
 

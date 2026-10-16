@@ -1,11 +1,23 @@
-// Add Disponibilidade record
+// Add a Disponibilidade record for the authenticated user
 query disponibilidade verb=POST {
   api_group = "Authentication"
+  auth = "user"
 
   input {
-    dblink {
-      table = "Disponibilidade"
+    enum dia_semana {
+      values = [
+        "segunda"
+        "terca"
+        "quarta"
+        "quinta"
+        "sexta"
+        "sabado"
+        "domingo"
+      ]
     }
+  
+    text hora_inicio filters=trim
+    text hora_fim filters=trim
   }
 
   stack {
@@ -14,9 +26,15 @@ query disponibilidade verb=POST {
       error = "O horário de fim deve ser depois do horário de início"
     }
   
+    // The owner is always the authenticated user
     db.add Disponibilidade {
-      enforce_hidden_fields = false
-      data = {created_at: "now"}
+      data = {
+        created_at : "now"
+        usuario_id : $auth.id
+        dia_semana : $input.dia_semana
+        hora_inicio: $input.hora_inicio
+        hora_fim   : $input.hora_fim
+      }
     } as $disponibilidade
   }
 

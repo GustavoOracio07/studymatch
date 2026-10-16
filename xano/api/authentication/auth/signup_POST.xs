@@ -19,16 +19,26 @@ query "auth/signup" verb=POST {
       error = "O semestre deve estar entre 1 e 12"
     }
   
-    // Check if a user record with that email exists
-    db.get user {
+    // Verify that the email being used to sign up is unique
+    db.has user {
       field_name = "email"
       field_value = $input.email
-    } as $user
+    } as $email_em_uso
   
-    // Verify that the email being used to sign up is unique
-    precondition ($user == null) {
-      error_type = "accessdenied"
-      error = "An account with this email already exists."
+    precondition ($email_em_uso == false) {
+      error_type = "inputerror"
+      error = "Este e-mail já está cadastrado."
+    }
+  
+    // Verify that the phone being used to sign up is unique
+    db.has user {
+      field_name = "Telefone"
+      field_value = $input.telefone
+    } as $telefone_em_uso
+  
+    precondition ($telefone_em_uso == false) {
+      error_type = "inputerror"
+      error = "Este telefone já está cadastrado."
     }
   
     // Create a new user record
@@ -55,9 +65,13 @@ query "auth/signup" verb=POST {
       id = $user.id
     } as $authToken
   
-    // Create an event log for signup
+    // Create an event log for signup (never log the password hash)
     function.run "Quick Start/log_event" {
-      input = {user_id: $user.id, action: "signup", metadata: $user}
+      input = {
+        user_id : $user.id
+        action  : "signup"
+        metadata: {email: $user.email}
+      }
     } as $event_log
   }
 

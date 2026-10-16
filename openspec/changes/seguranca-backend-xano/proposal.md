@@ -13,7 +13,7 @@ Hoje quase todos os endpoints do Xano são públicos: qualquer pessoa, sem login
 - **BREAKING**: os endpoints de escrita de `curso` e `disciplina` passam a exigir usuário com papel `admin`. Os alunos (`member`) não editam esses dados pelo app; a manutenção é feita pelo painel do Xano. A leitura continua pública.
 - Corrigir o login (nomes dos campos `Name`/`Password`) e não gravar mais o hash da senha no `event_log` (login, cadastro, redefinição de senha e magic link).
 - Cadastro com telefone ou e-mail já usado devolve uma mensagem amigável em português.
-- Ao apagar um usuário, apagar em cascata as disponibilidades e as disciplinas de dificuldade dele.
+- Novo endpoint `DELETE /auth/me`: o aluno apaga a própria conta e, em cascata, as disponibilidades e as disciplinas de dificuldade dele.
 - `POST /message/send_welcome_email` passa a exigir login e só envia para o próprio usuário.
 
 **Fora do escopo:**
@@ -34,6 +34,6 @@ Hoje quase todos os endpoints do Xano são públicos: qualquer pessoa, sem login
 
 ## Impact
 
-- Arquivos XanoScript em `xano/api/authentication/**`, novo trigger em `xano/table/trigger/`.
+- Arquivos XanoScript em `xano/api/authentication/**` e novas funções em `xano/function/study_match/`.
 - Publicação no workspace do Xano com `xano workspace push`.
 - Clientes da API precisam enviar `Authorization: Bearer <token>` nos endpoints protegidos. Não há frontend consumindo a API ainda, então não há quebra prática.
