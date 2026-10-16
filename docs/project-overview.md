@@ -16,7 +16,7 @@ Alunos com dificuldade em uma disciplina muitas vezes estudam sozinhos por não 
 
 ## 4. Público-alvo / usuários
 - **Aluno:** usuário principal. Cadastra-se, informa curso, semestre, disciplinas de dificuldade e disponibilidade, e interage com sugestões de match.
-- **Administrador** [CONFIRMAR]: mantém o cadastro de cursos e disciplinas. Hoje esses dados são carregados manualmente no Xano.
+- **Administrador:** mantém o cadastro de cursos e disciplinas apenas pelo painel do Xano. Qualquer pessoa pode ler cursos e disciplinas; ninguém os edita pelo app.
 
 ## 5. Escopo
 **Dentro do escopo inicial:**
@@ -27,11 +27,12 @@ Alunos com dificuldade em uma disciplina muitas vezes estudam sozinhos por não 
 - Sugestão de colegas compatíveis com percentual.
 - Interesse em um colega e resposta (aceitar/recusar), gerando match.
 
-**Fora do escopo inicial** [CONFIRMAR]:
+**Fora do escopo inicial:**
 - Chat dentro do sistema.
 - Grupos com mais de duas pessoas.
 - Notificações por e-mail/push.
 - Cadastro de cursos e disciplinas pela interface.
+- Recuperação de senha por e-mail.
 
 ## 6. Principais funcionalidades
 - Autenticação (cadastro, login, logout).
@@ -56,7 +57,7 @@ Alunos com dificuldade em uma disciplina muitas vezes estudam sozinhos por não 
 - **Frontend:** Streamlit, como tecnologia exclusiva do frontend.
 - **Especificação:** OpenSpec (schema spec-driven).
 - **Versionamento:** Git + GitHub.
-- **Deploy:** Render ou Railway [CONFIRMAR qual].
+- **Deploy:** Render.
 - **Agente de IA:** GitHub Copilot (modo Agent) com Xano Developer MCP.
 
 O banco já está estruturado no Xano com 6 tabelas: curso, disciplina, user, usuario_disciplina, disponibilidade e match_interesse. Algumas validações já existem nos endpoints.
@@ -69,7 +70,7 @@ O banco já está estruturado no Xano com 6 tabelas: curso, disciplina, user, us
 ## 10. Segurança e integridade
 - Regras de negócio e autorização ficam no Xano.
 - Cada aluno só altera os próprios dados.
-- Dados de contato só são exibidos após match confirmado [CONFIRMAR].
+- O telefone só é exibido após match confirmado.
 
 ## 11. Estratégia de desenvolvimento
 Desenvolvimento por changes do OpenSpec, com revisão do grupo antes de cada implementação. Apresentação final em 27/11/2026.

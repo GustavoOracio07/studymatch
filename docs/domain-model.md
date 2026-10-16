@@ -30,14 +30,12 @@ Estudante que usa o sistema. Usa a tabela de autenticação do Xano.
 ## Dificuldade em Disciplina (`usuario_disciplina`)
 Associação N:N que indica que um aluno tem dificuldade em uma disciplina.
 - **Informações:** aluno, disciplina.
-- **Regras:** o mesmo aluno não repete a mesma disciplina.
-- **Em aberto:** a disciplina precisa ser do mesmo curso do aluno? [CONFIRMAR]
+- **Regras:** o mesmo aluno não repete a mesma disciplina; o aluno só pode escolher disciplinas do próprio curso.
 
 ## Disponibilidade (`disponibilidade`)
 Faixa de horário em que o aluno pode estudar.
 - **Informações:** aluno, dia da semana (segunda a domingo), hora de início, hora de fim.
-- **Regras:** hora de fim maior que hora de início.
-- **Em aberto:** faixas sobrepostas do mesmo aluno são permitidas? [CONFIRMAR]
+- **Regras:** horas no formato HH:MM; hora de fim maior que hora de início (a faixa não atravessa a meia-noite); faixas sobrepostas do mesmo aluno não são permitidas.
 
 ## Interesse de Match (`match_interesse`)
 Registro de que um aluno demonstrou interesse em estudar com outro.
@@ -46,7 +44,7 @@ Registro de que um aluno demonstrou interesse em estudar com outro.
 - **Regras:** não pode ter o mesmo aluno como origem e alvo; não pode repetir o par origem/alvo.
 - **Relacionamentos:** referencia dois alunos.
 
-## Questões em aberto do domínio
-- **Cálculo da compatibilidade** [CONFIRMAR]: quais critérios (disciplinas em comum, horários em comum, curso, semestre) e com quais pesos?
-- **Par ou grupo** [CONFIRMAR]: o objetivo fala em grupos de estudo, mas o modelo atual é de pares. Grupo fica para depois?
-- **Interesse cruzado:** se A tem interesse em B e B em A, são dois registros ou o segundo aceita o primeiro? [CONFIRMAR]
+## Decisões do domínio
+- **Cálculo da compatibilidade:** 60% pelas disciplinas de dificuldade em comum e 40% pelos horários de disponibilidade em comum. Curso não entra no cálculo (a regra de disciplina já garante o mesmo curso); semestre fica fora do MVP.
+- **Par ou grupo:** o MVP suporta apenas pares. Grupos ficam para uma versão futura.
+- **Interesse cruzado:** se A já enviou interesse para B, B não cria um novo registro; B apenas aceita o interesse existente, que passa para `match`.
