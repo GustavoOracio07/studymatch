@@ -94,6 +94,11 @@ XanoAPI("t", base="https://x", http=http).definir_disciplinas(i for i in [1, 2])
 check("definir_disciplinas usa PUT com lista",
       http.chamadas[0][:2] == ("PUT", "https://x/minhas_disciplinas") and http.chamadas[0][3]["json"] == {"disciplina_ids": [1, 2]})
 
+http = HttpFalso(RespostaFalsa(200, {"id": 1, "status": "pendente"}))
+XanoAPI("t", base="https://x", http=http).demonstrar_interesse(9)
+check("demonstrar_interesse envia só o alvo",
+      http.chamadas[0][:2] == ("POST", "https://x/match_interesse") and http.chamadas[0][3]["json"] == {"usuario_alvo_id": 9})
+
 http = HttpFalso(RespostaFalsa(200))
 check("resposta vazia devolve None", XanoAPI("t", base="https://x", http=http)._req("DELETE", "/x") is None)
 

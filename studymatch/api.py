@@ -101,6 +101,14 @@ class XanoAPI:
     def apagar_disponibilidade(self, disponibilidade_id):
         return self._req("DELETE", f"/disponibilidade/{disponibilidade_id}")
 
+    # --- busca e interesse
+    def compativeis(self):
+        return self._req("GET", "/compativeis")
+
+    def demonstrar_interesse(self, usuario_alvo_id):
+        """Cria o interesse ou, se o colega já tinha demonstrado interesse, confirma o match."""
+        return self._req("POST", "/match_interesse", json={"usuario_alvo_id": usuario_alvo_id})
+
     # --- catálogo (público)
     def cursos(self):
         return self._req("GET", "/curso")
