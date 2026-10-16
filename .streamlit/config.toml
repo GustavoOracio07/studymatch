@@ -1,0 +1,26 @@
+# Tema visual do StudyMatch (referência: protótipo no Figma)
+
+[client]
+toolbarMode = "minimal"
+
+[theme]
+base = "light"
+primaryColor = "#5B3FE4"
+backgroundColor = "#F7F8FB"
+secondaryBackgroundColor = "#F1F3F9"
+textColor = "#111827"
+linkColor = "#5B3FE4"
+linkUnderline = false
+borderColor = "#D9DEE7"
+showWidgetBorder = true
+baseRadius = "10px"
+buttonRadius = "8px"
+baseFontSize = 15
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+headingFont = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+headingFontWeights = [700, 600, 600, 600, 600, 600]
+showSidebarBorder = true
+
+[theme.sidebar]
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F1F3F9"

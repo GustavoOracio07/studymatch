@@ -1,0 +1,283 @@
+/* Estilo geral do StudyMatch (referência: protótipo no Figma). Só apresentação. */
+
+:root {
+  --sm-roxo: #5B3FE4;
+  --sm-roxo-escuro: #4A30CF;
+  --sm-roxo-claro: #EEEBFF;
+  --sm-texto: #111827;
+  --sm-cinza: #6B7280;
+  --sm-cinza-claro: #9CA3AF;
+  --sm-borda: #E3E7EF;
+  --sm-fundo: #F7F8FB;
+}
+
+/* Remove textos de ajuda em inglês e o indicador "Running..." do Streamlit */
+[data-testid="InputInstructions"],
+[data-testid="stStatusWidget"] {
+  display: none !important;
+}
+
+header[data-testid="stHeader"] {
+  background: transparent;
+}
+
+[data-testid="stMainBlockContainer"] {
+  padding: 0 2rem 3rem;
+  max-width: none;
+}
+
+/* Menu lateral estreito, como no Figma */
+section[data-testid="stSidebar"][aria-expanded="true"] {
+  width: 220px !important;
+  min-width: 220px !important;
+}
+
+/* --- Menu lateral --- */
+[data-testid="stSidebarNavLink"] {
+  border-radius: 10px;
+  padding: 0.55rem 0.8rem;
+  margin: 2px 0;
+}
+[data-testid="stSidebarNavLink"] span {
+  color: #4B5563;
+  font-weight: 500;
+}
+[data-testid="stSidebarNavLink"][aria-current="page"] {
+  background: var(--sm-roxo-claro);
+}
+[data-testid="stSidebarNavLink"][aria-current="page"] span {
+  color: var(--sm-roxo);
+  font-weight: 600;
+}
+[data-testid="stLogo"] {
+  height: 2rem;
+}
+
+/* --- Faixa de boas-vindas no topo das páginas --- */
+.st-key-hero {
+  background: linear-gradient(100deg, #E3E7FF 0%, #EDEFFF 55%, #F5F6FD 100%);
+  margin: 0 -2rem 1.5rem;
+  padding: 2.4rem 2rem 1.6rem;
+  border-bottom: 1px solid #E6E8F5;
+}
+.st-key-hero h1 {
+  font-size: 1.85rem;
+  padding: 0;
+}
+.st-key-hero p {
+  color: #374151;
+  max-width: 560px;
+  margin-bottom: 0;
+}
+
+/* --- Cartões --- */
+[class*="st-key-cartao_"] {
+  background: #FFFFFF;
+  border: 1.5px solid var(--sm-borda);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+.st-key-painel_perfil {
+  background: #FFFFFF;
+  border: 1px solid var(--sm-borda);
+  border-radius: 14px;
+  padding: 1.1rem 1.1rem 1.3rem;
+}
+
+/* --- Botões --- */
+[data-testid="stBaseButton-primary"],
+[data-testid="stBaseButton-primaryFormSubmit"] {
+  font-weight: 600;
+  border: none;
+}
+[data-testid="stBaseButton-primary"]:hover,
+[data-testid="stBaseButton-primaryFormSubmit"]:hover {
+  background: var(--sm-roxo-escuro);
+}
+[data-testid="stBaseButton-secondary"],
+[data-testid="stBaseButton-secondaryFormSubmit"] {
+  background: #FFFFFF;
+  border: 1.5px solid #D0D5DD;
+  color: #1F2937;
+  font-weight: 500;
+}
+
+/* --- Abas --- */
+[data-testid="stTabs"] [role="tablist"] {
+  gap: 0.5rem;
+}
+[data-testid="stTabs"] button[role="tab"] p {
+  font-weight: 500;
+}
+
+/* --- Campos --- */
+[data-testid="stTextInputRootElement"],
+[data-testid="stTextInputRootElement"] input,
+[data-testid="stTextAreaRootElement"],
+[data-testid="stTextAreaRootElement"] textarea,
+[data-testid="stSelectbox"] > div > div,
+[data-testid="stMultiSelect"] > div > div {
+  background: #FFFFFF;
+}
+
+/* Formulários como cartões brancos */
+[data-testid="stForm"] {
+  background: #FFFFFF;
+  border: 1.5px solid var(--sm-borda);
+  border-radius: 14px;
+  padding: 1.2rem 1.4rem;
+}
+
+/* --- Elementos em HTML (avatar, selos, linhas de informação) --- */
+.sm-titulo-secao {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0.2rem 0 0.4rem;
+}
+.sm-contador {
+  background: #EEF0F4;
+  color: #4B5563;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+}
+.sm-info {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.sm-avatar {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+}
+.sm-avatar-grande {
+  width: 72px;
+  height: 72px;
+  font-size: 1.4rem;
+}
+.sm-nome-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+.sm-nome {
+  font-weight: 600;
+  font-size: 1.02rem;
+  color: var(--sm-texto);
+}
+.sm-selo {
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  white-space: nowrap;
+}
+.sm-selo-verde { background: #DCFCE7; color: #15803D; }
+.sm-selo-amarelo { background: #FEF3C7; color: #A16207; }
+.sm-selo-laranja { background: #FFEDD5; color: #C2410C; }
+.sm-linha {
+  display: flex;
+  gap: 0.4rem;
+  align-items: flex-start;
+  color: #4B5563;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  margin: 0.2rem 0;
+}
+.sm-linha svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--sm-cinza);
+}
+.sm-destaque {
+  color: var(--sm-roxo);
+  font-weight: 500;
+}
+.sm-sobre-titulo {
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin-bottom: 0.25rem;
+}
+.sm-sobre-texto {
+  color: #4B5563;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+.sm-perfil-topo {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  border: 1.5px solid var(--sm-borda);
+  border-radius: 12px;
+  padding: 0.8rem;
+  margin-bottom: 0.9rem;
+}
+.sm-barra {
+  height: 8px;
+  background: #E5E7EB;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0.35rem 0 0.9rem;
+}
+.sm-barra > div {
+  height: 100%;
+  background: var(--sm-roxo);
+  border-radius: 999px;
+}
+.sm-item-perfil {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #EEF0F4;
+  padding: 0.6rem 0.1rem;
+  font-size: 0.86rem;
+  color: #1F2937;
+}
+.sm-item-perfil span.sm-cinza {
+  color: var(--sm-cinza);
+}
+.sm-resumo-titulo {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0.4rem 0 0.4rem;
+}
+.sm-resumo-rotulo {
+  font-weight: 500;
+  font-size: 0.84rem;
+  color: #1F2937;
+}
+.sm-resumo-valor {
+  color: var(--sm-cinza);
+  font-size: 0.82rem;
+  margin: 0 0 0.6rem 1.35rem;
+}
+.sm-ok {
+  color: #16A34A;
+}
+
+/* Bordas completas no "Sobre mim" e campo numérico em branco */
+[data-testid="stTextAreaRootElement"] {
+  border: 1px solid var(--sm-borda) !important;
+  border-radius: 10px;
+}
+[data-testid="stNumberInputContainer"],
+[data-testid="stNumberInputContainer"] input,
+[data-testid="stNumberInputContainer"] button {
+  background: #FFFFFF;
+}

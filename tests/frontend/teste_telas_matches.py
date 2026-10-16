@@ -34,14 +34,14 @@ at = AppTest.from_file(str(RAIZ / "app.py"), default_timeout=90)
 at.session_state["token"] = ta
 at.run()
 at.switch_page("paginas/matches.py").run()
-check("abre Meus matches", any(t.value == "Meus matches" for t in at.title), tudo(at))
+check("abre Meus matches", any(t.value.startswith("Meus matches") for t in at.title), tudo(at))
 check("abas com contagem", [t.label for t in at.tabs] == ["Recebidos (2)", "Enviados (1)", "Confirmados (0)"],
       str([t.label for t in at.tabs]))
 check("nenhum telefone antes do match", all(tel not in tudo(at) for tel in (tel_b, tel_c, tel_d)), tudo(at))
 
 at.button(key=f"aceitar_{mi_ba}").click().run()
 check("aceitar mostra confirmação", "Match confirmado com Teste!" in tudo(at), tudo(at))
-check("aceito vai para Confirmados com telefone", f"**Telefone:** {tel_b}" in tudo(at)
+check("aceito vai para Confirmados com telefone", f"Telefone: {tel_b}" in tudo(at)
       and [t.label for t in at.tabs][2] == "Confirmados (1)", tudo(at))
 
 at.button(key=f"recusar_{mi_ca}").click().run()
@@ -50,7 +50,7 @@ check("recusado não mostra telefone", tel_c not in tudo(at) and [t.label for t 
       tudo(at))
 
 at.button(key=f"cancelar_{mi_ad}").click().run()
-check("cancelar interesse mostra confirmação", "Interesse em Teste cancelado." in tudo(at), tudo(at))
+check("cancelar interesse mostra confirmação", "Interesse em Teste cancelado." in tudo(at), str([e.value for e in at.error]) + str(at.exception))
 check("cancelado sai de Enviados", [t.label for t in at.tabs][1] == "Enviados (0)", str([t.label for t in at.tabs]))
 
 r = req("GET", "/meus_matches", tb)
