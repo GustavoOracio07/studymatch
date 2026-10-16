@@ -46,9 +46,14 @@ query "disponibilidade/{disponibilidade_id}" verb=PATCH {
       }
     }
   
-    precondition ($novo.hora_fim > $novo.hora_inicio) {
-      error_type = "inputerror"
-      error = "O horário de fim deve ser depois do horário de início"
+    function.run "StudyMatch/validar_disponibilidade" {
+      input = {
+        user_id    : $auth.id
+        dia_semana : $novo.dia_semana
+        hora_inicio: $novo.hora_inicio
+        hora_fim   : $novo.hora_fim
+        ignorar_id : $atual.id
+      }
     }
   
     db.patch Disponibilidade {

@@ -14,3 +14,5 @@ st.write(
     "O StudyMatch sugere colegas que têm dificuldade nas mesmas disciplinas que você "
     "e horários livres em comum."
 )
+st.page_link("paginas/perfil.py", label="Complete o seu perfil: disciplinas e horários disponíveis",
+             icon=":material/person:")

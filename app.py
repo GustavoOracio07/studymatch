@@ -8,6 +8,7 @@ st.set_page_config(page_title="StudyMatch", page_icon=":material/school:", layou
 if sessao.esta_logado():
     paginas = [
         st.Page("paginas/inicio.py", title="Início", icon=":material/home:", default=True),
+        st.Page("paginas/perfil.py", title="Meu perfil", icon=":material/person:"),
         st.Page("paginas/sair.py", title="Sair", icon=":material/logout:"),
     ]
 else:

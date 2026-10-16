@@ -24,6 +24,7 @@ A change `seguranca-backend-xano` já garante o dono dos registros. Faltam as re
 4. **Troca de curso remove as disciplinas de dificuldade.** Alternativa: bloquear a troca enquanto houver disciplinas. Descartada por ser pior para o aluno. A tela avisa antes de salvar.
 5. **`PATCH /auth/me` recebe o perfil completo** (a tela sempre envia todos os campos), o que evita ambiguidade entre "não enviado" e "vazio". A resposta é relida com `output` explícito, para nunca devolver o hash da senha.
 6. **Na tela, as listas do aluno ficam em `st.session_state`** e só são recarregadas depois de uma alteração. O catálogo de disciplinas usa o cache de 10 min já existente.
+7. **O cliente repete a chamada após um 429** (esperas de 2, 4 e 8 s) antes de mostrar o erro. Os testes de tela mostraram que abrir "Meu perfil" logo depois de outras ações estoura o limite do plano free (a página faz até 4 chamadas na primeira abertura).
 
 ## Risks / Trade-offs
 

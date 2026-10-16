@@ -26,14 +26,24 @@ def sair(aviso=None):
 
 def aluno_atual():
     """Dados do aluno logado (`GET /auth/me`), guardados na sessão para poupar requisições."""
-    if "aluno" not in st.session_state:
-        st.session_state["aluno"] = api().eu()
-    return st.session_state["aluno"]
+    return dados_da_sessao("aluno", lambda: api().eu())
 
 
 def recarregar_aluno():
     st.session_state.pop("aluno", None)
     return aluno_atual()
+
+
+def dados_da_sessao(chave, carregar):
+    """Guarda na sessão o resultado de `carregar()` para não repetir a chamada a cada interação."""
+    if chave not in st.session_state:
+        st.session_state[chave] = carregar()
+    return st.session_state[chave]
+
+
+def invalidar(*chaves):
+    for chave in chaves:
+        st.session_state.pop(chave, None)
 
 
 def mostrar_erro(erro: ErroAPI):

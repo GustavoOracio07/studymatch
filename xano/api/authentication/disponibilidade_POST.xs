@@ -21,9 +21,13 @@ query disponibilidade verb=POST {
   }
 
   stack {
-    precondition ($input.hora_fim > $input.hora_inicio) {
-      error_type = "inputerror"
-      error = "O horário de fim deve ser depois do horário de início"
+    function.run "StudyMatch/validar_disponibilidade" {
+      input = {
+        user_id    : $auth.id
+        dia_semana : $input.dia_semana
+        hora_inicio: $input.hora_inicio
+        hora_fim   : $input.hora_fim
+      }
     }
   
     // The owner is always the authenticated user

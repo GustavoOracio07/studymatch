@@ -11,7 +11,18 @@ query "auth/me" verb=GET {
     db.get user {
       field_name = "id"
       field_value = $auth.id
-      output = ["id", "created_at", "Name", "email", "role"]
+      output = [
+        "id"
+        "created_at"
+        "Name"
+        "Sobrenome"
+        "email"
+        "role"
+        "curso_id"
+        "Semestre"
+        "Telefone"
+        "Sobre_mim"
+      ]
     } as $user
   
     // Create an event log for get user record
@@ -19,7 +30,7 @@ query "auth/me" verb=GET {
       input = {
         user_id : $user.id
         action  : "get_auth_user"
-        metadata: $user
+        metadata: {}
       }
     } as $event_log
   }
