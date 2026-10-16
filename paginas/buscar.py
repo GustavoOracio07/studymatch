@@ -72,6 +72,7 @@ for colega in compativeis:
                 virou_match = interesse["status"] == "match"
                 colega["situacao"] = "match" if virou_match else "enviado"
                 colega["interesse_id"] = interesse["id"]
+                sessao.invalidar("meus_matches")
                 st.session_state["busca_sucesso"] = (
                     f"Match confirmado com {colega['nome']}!" if virou_match
                     else f"Interesse enviado para {colega['nome']}."

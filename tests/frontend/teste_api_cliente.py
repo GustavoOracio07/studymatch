@@ -99,6 +99,12 @@ XanoAPI("t", base="https://x", http=http).demonstrar_interesse(9)
 check("demonstrar_interesse envia só o alvo",
       http.chamadas[0][:2] == ("POST", "https://x/match_interesse") and http.chamadas[0][3]["json"] == {"usuario_alvo_id": 9})
 
+for aceitar, status in ((True, "match"), (False, "recusado")):
+    http = HttpFalso(RespostaFalsa(200, {"id": 3, "status": status}))
+    XanoAPI("t", base="https://x", http=http).responder_interesse(3, aceitar)
+    check(f"responder_interesse(aceitar={aceitar}) envia status {status}",
+          http.chamadas[0][:2] == ("PATCH", "https://x/match_interesse/3") and http.chamadas[0][3]["json"] == {"status": status})
+
 http = HttpFalso(RespostaFalsa(200))
 check("resposta vazia devolve None", XanoAPI("t", base="https://x", http=http)._req("DELETE", "/x") is None)
 

@@ -109,6 +109,17 @@ class XanoAPI:
         """Cria o interesse ou, se o colega já tinha demonstrado interesse, confirma o match."""
         return self._req("POST", "/match_interesse", json={"usuario_alvo_id": usuario_alvo_id})
 
+    # --- meus matches
+    def meus_matches(self):
+        return self._req("GET", "/meus_matches")
+
+    def responder_interesse(self, interesse_id, aceitar):
+        status = "match" if aceitar else "recusado"
+        return self._req("PATCH", f"/match_interesse/{interesse_id}", json={"status": status})
+
+    def cancelar_interesse(self, interesse_id):
+        return self._req("DELETE", f"/match_interesse/{interesse_id}")
+
     # --- catálogo (público)
     def cursos(self):
         return self._req("GET", "/curso")
