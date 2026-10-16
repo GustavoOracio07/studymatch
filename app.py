@@ -9,6 +9,7 @@ if sessao.esta_logado():
     paginas = [
         st.Page("paginas/inicio.py", title="Início", icon=":material/home:", default=True),
         st.Page("paginas/perfil.py", title="Meu perfil", icon=":material/person:"),
+        st.Page("paginas/buscar.py", title="Buscar colegas", icon=":material/search:"),
         st.Page("paginas/sair.py", title="Sair", icon=":material/logout:"),
     ]
 else:

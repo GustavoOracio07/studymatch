@@ -62,7 +62,7 @@ next(t for t in at.time_input if t.label == "Início").set_value(dt.time(9, 0))
 next(t for t in at.time_input if t.label == "Fim").set_value(dt.time(11, 0))
 botao(at, "Adicionar horário").click().run()
 check("adicionar horário mostra sucesso", "Horário adicionado." in textos(at), textos(at))
-check("horário aparece na lista", any("das 09:00 às 11:00" in m.value for m in at.markdown),
+check("horário aparece na lista", any("Segunda-feira, das 09:00 às 11:00" in m.value for m in at.markdown),
       str([m.value for m in at.markdown]))
 
 next(t for t in at.time_input if t.label == "Início").set_value(dt.time(10, 0))
@@ -72,7 +72,7 @@ check("faixa sobreposta mostra o erro da API",
       "Este horário se sobrepõe a outra disponibilidade sua." in textos(at), textos(at))
 
 botao(at, "Remover").click().run()
-check("remover horário", not any("das 09:00 às 11:00" in m.value for m in at.markdown))
+check("remover horário", not any("Segunda-feira, das 09:00 às 11:00" in m.value for m in at.markdown))
 r = req("GET", "/disponibilidade", token)
 check("horário removido no Xano", r.json() == [], r.text)
 

@@ -4,16 +4,8 @@ import streamlit as st
 
 from studymatch import sessao
 from studymatch.api import ErroAPI, listar_cursos, listar_disciplinas
-
-DIAS = {
-    "segunda": "Segunda-feira",
-    "terca": "Terça-feira",
-    "quarta": "Quarta-feira",
-    "quinta": "Quinta-feira",
-    "sexta": "Sexta-feira",
-    "sabado": "Sábado",
-    "domingo": "Domingo",
-}
+from studymatch.dominio import DIAS_SEMANA as DIAS
+from studymatch.dominio import descrever_horario
 
 st.title("Meu perfil")
 api = sessao.api()
@@ -75,6 +67,7 @@ with aba_dados:
                 if atualizado["curso_id"] != aluno.get("curso_id"):
                     sessao.invalidar("minhas_disciplinas")
                 st.session_state["aluno"] = atualizado
+                sessao.invalidar("compativeis")
                 st.session_state["perfil_sucesso"] = "Dados salvos."
                 st.rerun()
 
@@ -100,6 +93,7 @@ with aba_disciplinas:
                 sessao.mostrar_erro(e)
             else:
                 st.session_state["minhas_disciplinas"] = novas
+                sessao.invalidar("compativeis")
                 st.session_state["perfil_sucesso"] = "Disciplinas salvas."
                 st.rerun()
 
@@ -112,7 +106,7 @@ with aba_disponibilidade:
         st.info("Você ainda não cadastrou horários disponíveis.")
     for faixa in faixas:
         col_texto, col_botao = st.columns([4, 1], vertical_alignment="center")
-        col_texto.write(f"**{DIAS[faixa['dia_semana']]}**, das {faixa['hora_inicio']} às {faixa['hora_fim']}")
+        col_texto.write(descrever_horario(faixa))
         if col_botao.button("Remover", key=f"remover_disp_{faixa['id']}", icon=":material/delete:"):
             try:
                 api.apagar_disponibilidade(faixa["id"])
@@ -120,6 +114,7 @@ with aba_disponibilidade:
                 sessao.mostrar_erro(e)
             else:
                 st.session_state["minhas_disponibilidades"] = [f for f in minhas_disponibilidades if f["id"] != faixa["id"]]
+                sessao.invalidar("compativeis")
                 st.rerun()
 
     with st.form("nova_disponibilidade", clear_on_submit=False):
@@ -138,5 +133,6 @@ with aba_disponibilidade:
             sessao.mostrar_erro(e)
         else:
             st.session_state["minhas_disponibilidades"] = minhas_disponibilidades + [nova]
+            sessao.invalidar("compativeis")
             st.session_state["perfil_sucesso"] = "Horário adicionado."
             st.rerun()
