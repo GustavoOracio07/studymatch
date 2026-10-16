@@ -23,6 +23,12 @@ query "match_interesse/{match_interesse_id}" verb=DELETE {
       error = "Só o aluno que enviou o interesse pode apagá-lo."
     }
   
+    // A confirmed match cannot be undone by one side alone
+    precondition ($match_interesse.status == "pendente") {
+      error_type = "inputerror"
+      error = "Só é possível cancelar interesses pendentes."
+    }
+  
     db.del Match_interesse {
       field_name = "id"
       field_value = $input.match_interesse_id
