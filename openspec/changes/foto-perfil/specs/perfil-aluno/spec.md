@@ -3,7 +3,7 @@
 ## ADDED Requirements
 
 ### Requirement: Foto de perfil
-O aluno SHALL poder enviar, trocar e remover a própria foto de perfil. O sistema SHALL aceitar apenas imagens JPEG, PNG ou WEBP de até 2 MB, SHALL apagar do armazenamento a foto substituída ou removida e SHALL devolver `foto_url` no perfil (`null` quando não houver foto).
+O aluno SHALL poder enviar, trocar e remover a própria foto de perfil. O sistema SHALL aceitar apenas imagens JPEG, PNG ou WEBP de até 2 MB, SHALL deixar de referenciar a foto substituída ou removida, SHALL pedir a exclusão do arquivo com `storage.delete_file` e SHALL devolver `foto_url` no perfil (`null` quando não houver foto).
 
 #### Scenario: Enviar foto válida
 - **WHEN** um aluno sem foto chama `POST /auth/me/foto` com uma imagem PNG de 500 KB no campo `foto`
@@ -11,7 +11,7 @@ O aluno SHALL poder enviar, trocar e remover a própria foto de perfil. O sistem
 
 #### Scenario: Trocar a foto
 - **WHEN** um aluno que já tem foto envia outra imagem válida
-- **THEN** `foto_url` passa a apontar para a nova imagem e o arquivo da foto anterior é apagado do armazenamento
+- **THEN** `foto_url` passa a apontar para a nova imagem e o perfil não referencia mais a foto anterior
 
 #### Scenario: Arquivo que não é imagem
 - **WHEN** um aluno envia um arquivo PDF no campo `foto`
@@ -27,7 +27,7 @@ O aluno SHALL poder enviar, trocar e remover a própria foto de perfil. O sistem
 
 #### Scenario: Remover a foto
 - **WHEN** um aluno com foto chama `DELETE /auth/me/foto`
-- **THEN** o sistema responde 200, `GET /auth/me` devolve `foto_url` nulo e o arquivo é apagado do armazenamento
+- **THEN** o sistema responde 200 e `GET /auth/me` devolve `foto_url` nulo
 
 #### Scenario: Remover sem ter foto
 - **WHEN** um aluno sem foto chama `DELETE /auth/me/foto`

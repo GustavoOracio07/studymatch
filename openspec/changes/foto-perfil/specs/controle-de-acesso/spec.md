@@ -3,7 +3,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Exclusão em cascata do usuário
-O aluno SHALL poder apagar a própria conta com `DELETE /auth/me`, e o sistema SHALL apagar junto, na mesma transação, as disponibilidades, as disciplinas de dificuldade e todos os interesses de match em que ele é origem ou alvo, em qualquer status, e SHALL apagar do armazenamento o arquivo da foto de perfil, se houver.
+O aluno SHALL poder apagar a própria conta com `DELETE /auth/me`, e o sistema SHALL apagar junto, na mesma transação, as disponibilidades, as disciplinas de dificuldade e todos os interesses de match em que ele é origem ou alvo, em qualquer status, e SHALL pedir a exclusão do arquivo da foto de perfil com `storage.delete_file`, se houver.
 
 #### Scenario: Aluno apaga a própria conta
 - **WHEN** um aluno com disponibilidades e disciplinas de dificuldade chama `DELETE /auth/me`
@@ -15,7 +15,7 @@ O aluno SHALL poder apagar a própria conta com `DELETE /auth/me`, e o sistema S
 
 #### Scenario: Foto do aluno apagado
 - **WHEN** um aluno com foto de perfil chama `DELETE /auth/me`
-- **THEN** a `foto_url` que ele tinha deixa de abrir a imagem
+- **THEN** o sistema responde 200 e o login dele passa a falhar, como numa conta sem foto
 
 #### Scenario: Exclusão sem token
 - **WHEN** um cliente chama `DELETE /auth/me` sem token

@@ -18,7 +18,7 @@ query compativeis verb=GET {
     db.query user {
       where = $db.user.curso_id == $aluno.curso_id && $db.user.id != $auth.id
       return = {type: "list"}
-      output = ["id", "Name", "Sobrenome", "Semestre", "Sobre_mim"]
+      output = ["id", "Name", "Sobrenome", "Semestre", "Sobre_mim", "Foto"]
     } as $colegas
   
     db.query Match_interesse {
@@ -38,6 +38,10 @@ query compativeis verb=GET {
       
         conditional {
           if (($compatibilidade.disciplinas_comuns|count) > 0) {
+            function.run "StudyMatch/url_foto" {
+              input = {foto: $colega.Foto}
+            } as $foto_url
+          
             // Interest status between the two, by priority: match > recebido > enviado > recusado
             var $situacao {
               value = "nenhum"
@@ -130,6 +134,7 @@ query compativeis verb=GET {
                     sobrenome         : $colega.Sobrenome
                     semestre          : $colega.Semestre
                     sobre_mim         : $colega.Sobre_mim
+                    foto_url          : $foto_url
                     percentual        : $compatibilidade.percentual
                     disciplinas_comuns: $compatibilidade.disciplinas_comuns
                     horarios_comuns   : $compatibilidade.horarios_comuns

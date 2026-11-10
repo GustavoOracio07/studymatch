@@ -4,6 +4,7 @@ Cria um aluno de teste e apaga no final.
 Uso: python tests/frontend/teste_telas_perfil.py
 """
 import datetime as dt
+import io
 import os
 import pathlib
 import sys
@@ -12,9 +13,13 @@ RAIZ = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RAIZ / "tests" / "api"))
 
 from apoio import BASE, apagar_aluno, check, novo_aluno, req, resumo  # noqa: E402
+from PIL import Image  # noqa: E402
 from streamlit.testing.v1 import AppTest  # noqa: E402
 
 os.environ.setdefault("XANO_API_URL", BASE)
+_buf = io.BytesIO()
+Image.new("RGB", (32, 32), "purple").save(_buf, "PNG")
+PNG = _buf.getvalue()
 os.chdir(RAIZ)
 
 
@@ -75,6 +80,24 @@ botao(at, "Remover").click().run()
 check("remover horário", not any("Segunda-feira, das 09:00 às 11:00" in m.value for m in at.markdown))
 r = req("GET", "/disponibilidade", token)
 check("horário removido no Xano", r.json() == [], r.text)
+
+# --- foto (o AppTest não preenche o seletor de arquivo, então a foto é enviada pela API)
+check("sem foto mostra as iniciais", any('class="sm-avatar sm-avatar-grande"' in m.value and ">TT<" in m.value
+                                         for m in at.markdown), str([m.value for m in at.markdown][:5]))
+check("sem foto, Remover foto fica desabilitado", botao(at, "Remover foto").disabled)
+r = req("POST", "/auth/me/foto", token, files={"foto": ("f.png", PNG, "image/png")})
+foto_url = r.json().get("foto_url")
+at = AppTest.from_file(str(RAIZ / "app.py"), default_timeout=60)
+at.session_state["token"] = token
+at.run()
+at.switch_page("paginas/perfil.py").run()
+check("com foto mostra a imagem", foto_url and any(f'src="{foto_url}"' in m.value for m in at.markdown),
+      str([m.value for m in at.markdown][:5]))
+botao(at, "Remover foto").click().run()
+check("remover foto mostra sucesso", "Foto removida." in textos(at), textos(at))
+check("depois de remover volta às iniciais", not any("sm-avatar-foto" in m.value for m in at.markdown))
+r = req("GET", "/auth/me", token)
+check("foto removida no Xano", r.json().get("foto_url", "ausente") is None, r.text)
 
 apagar_aluno(token)
 resumo()

@@ -1,10 +1,16 @@
-// Apaga um usuário e, em cascata, as disponibilidades, as disciplinas de dificuldade e os interesses de match dele
+// Apaga um usuário e, em cascata, as disponibilidades, as disciplinas de dificuldade, os interesses de match e a foto dele
 function "StudyMatch/excluir_usuario" {
   input {
     int user_id
   }
 
   stack {
+    db.get user {
+      field_name = "id"
+      field_value = $input.user_id
+      output = ["id", "Foto"]
+    } as $aluno
+  
     db.transaction {
       stack {
         db.bulk.delete Disponibilidade {
@@ -23,6 +29,15 @@ function "StudyMatch/excluir_usuario" {
         db.del user {
           field_name = "id"
           field_value = $input.user_id
+        }
+      }
+    }
+  
+    // O arquivo da foto fica fora do banco; é apagado depois que a conta foi removida
+    conditional {
+      if ($aluno.Foto != null && $aluno.Foto.path != null) {
+        storage.delete_file {
+          pathname = $aluno.Foto.path
         }
       }
     }

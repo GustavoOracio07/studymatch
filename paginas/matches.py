@@ -70,7 +70,7 @@ def cartao(item, meio_html, acoes=None):
         col_info, col_meio, col_sobre = st.columns([1.35, 0.9, 1.1], gap="medium")
         html_(
             '<div class="sm-info">'
-            + visual.avatar(item["nome"], item["sobrenome"], item["usuario_id"])
+            + visual.avatar(item["nome"], item["sobrenome"], item["usuario_id"], foto_url=item.get("foto_url"))
             + '<div><div class="sm-nome-linha">'
             + f'<span class="sm-nome">{esc(item["nome"])} {esc(item["sobrenome"])}</span>'
             + visual.selo(item["percentual"]) + "</div>"

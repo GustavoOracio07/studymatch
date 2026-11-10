@@ -85,6 +85,13 @@ class XanoAPI:
     def atualizar_perfil(self, dados):
         return self._req("PATCH", "/auth/me", json=dados)
 
+    def enviar_foto(self, nome, conteudo, tipo):
+        """Envia a foto de perfil (multipart, campo `foto`) e devolve o perfil com `foto_url`."""
+        return self._req("POST", "/auth/me/foto", files={"foto": (nome, conteudo, tipo)})
+
+    def remover_foto(self):
+        return self._req("DELETE", "/auth/me/foto")
+
     def minhas_disciplinas(self):
         return self._req("GET", "/usuario_disciplina")
 

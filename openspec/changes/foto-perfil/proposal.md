@@ -7,10 +7,10 @@ Hoje os colegas compatíveis e os matches aparecem só com nome, semestre e "sob
 ## What Changes
 
 - A tabela `user` ganha o campo opcional `Foto` (tipo `image`).
-- Novo endpoint `POST /auth/me/foto` (multipart, campo `foto`): o aluno envia uma imagem JPEG, PNG ou WEBP de até 2 MB. O Xano guarda a imagem, apaga a foto anterior do armazenamento e devolve o perfil.
-- Novo endpoint `DELETE /auth/me/foto`: remove a foto do aluno (campo e arquivo).
+- Novo endpoint `POST /auth/me/foto` (multipart, campo `foto`): o aluno envia uma imagem JPEG, PNG ou WEBP de até 2 MB. O Xano guarda a imagem, pede a exclusão da foto anterior e devolve o perfil.
+- Novo endpoint `DELETE /auth/me/foto`: remove a foto do perfil do aluno e pede a exclusão do arquivo.
 - `GET /auth/me`, `PATCH /auth/me`, `GET /compativeis` e `GET /meus_matches` passam a devolver `foto_url` (URL pública da imagem, ou `null` sem foto).
-- `StudyMatch/excluir_usuario` apaga também o arquivo da foto ao excluir a conta.
+- `StudyMatch/excluir_usuario` pede também a exclusão do arquivo da foto ao excluir a conta.
 - Streamlit: na aba "Dados" do Meu perfil, o aluno vê a foto atual, envia uma nova ou remove. Os cards de colegas no Início e em Meus matches mostram a foto; sem foto, mostram um avatar com as iniciais.
 
 **Fora do escopo:**
@@ -19,6 +19,7 @@ Hoje os colegas compatíveis e os matches aparecem só com nome, semestre e "sob
 - Moderação de conteúdo das fotos.
 - Mais de uma foto por aluno.
 - Esconder a foto até o match: a foto é visível para os colegas compatíveis, como o nome.
+- Garantir que o arquivo some do armazenamento: no plano free, `storage.delete_file` não dá erro, mas o arquivo continua acessível pelo link antigo (ver design).
 
 ## Capabilities
 

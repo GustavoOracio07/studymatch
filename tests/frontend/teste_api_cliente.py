@@ -105,6 +105,16 @@ for aceitar, status in ((True, "match"), (False, "recusado")):
     check(f"responder_interesse(aceitar={aceitar}) envia status {status}",
           http.chamadas[0][:2] == ("PATCH", "https://x/match_interesse/3") and http.chamadas[0][3]["json"] == {"status": status})
 
+http = HttpFalso(RespostaFalsa(200, {"id": 1, "foto_url": "https://x/vault/f.png"}))
+r = XanoAPI("t", base="https://x", http=http).enviar_foto("f.png", b"PNG", "image/png")
+check("enviar_foto faz POST multipart no campo foto",
+      http.chamadas[0][:2] == ("POST", "https://x/auth/me/foto") and "json" not in http.chamadas[0][3]
+      and http.chamadas[0][3]["files"] == {"foto": ("f.png", b"PNG", "image/png")} and r["foto_url"])
+
+http = HttpFalso(RespostaFalsa(200))
+XanoAPI("t", base="https://x", http=http).remover_foto()
+check("remover_foto faz DELETE", http.chamadas[0][:2] == ("DELETE", "https://x/auth/me/foto"))
+
 http = HttpFalso(RespostaFalsa(200))
 check("resposta vazia devolve None", XanoAPI("t", base="https://x", http=http)._req("DELETE", "/x") is None)
 
