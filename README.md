@@ -79,7 +79,7 @@ O repositório já tem o Blueprint [`render.yaml`](render.yaml): um web service 
 1. Entre no [Render](https://dashboard.render.com/) e conecte a sua conta do GitHub.
 2. Clique em **New → Blueprint** e escolha o repositório `studymatch` (branch `main`).
 3. O Render lê o `render.yaml` e pede o valor de **`XANO_API_URL`**. Informe a URL base da API (a mesma do `secrets.toml`).
-4. Clique em **Apply**. O primeiro build leva alguns minutos. Quando terminar, o app fica em `https://studymatch-xxxx.onrender.com`.
+4. Clique em **Apply**. O primeiro build leva alguns minutos. Quando terminar, o app fica em https://studymatch-y50f.onrender.com/.
 5. A cada commit na `main`, o Render faz um novo deploy automaticamente (`autoDeployTrigger: commit`).
 
 Observações:
