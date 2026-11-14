@@ -2,11 +2,14 @@
 
 O frontend só consome a API: as regras de negócio e as validações ficam no Xano.
 """
+import base64
+import io
 import os
 import time
 
 import requests
 import streamlit as st
+from PIL import Image, ImageOps
 
 MSG_LIMITE = "Muitas requisições em pouco tempo. Aguarde alguns segundos e tente de novo."
 MSG_REDE = "Não foi possível falar com o servidor. Verifique sua conexão e tente de novo."
@@ -15,6 +18,24 @@ MSG_SEM_CONFIGURACAO = "A variável XANO_API_URL não está configurada. Veja o 
 
 # O plano free do Xano aceita 10 requisições a cada 20 s: após um 429, espera e tenta de novo
 ESPERAS_APOS_LIMITE = (2, 4, 8)
+
+
+LADO_FOTO = 256
+
+
+def foto_data_url(conteudo):
+    """Bytes de uma imagem -> data URL JPEG quadrada de 256x256 (corte central), pronta para o Xano.
+
+    Arquivo que não é imagem vira um texto inválido de propósito: quem recusa e dá a mensagem é o Xano."""
+    try:
+        with Image.open(io.BytesIO(conteudo)) as img:
+            img = ImageOps.exif_transpose(img).convert("RGB")
+            img = ImageOps.fit(img, (LADO_FOTO, LADO_FOTO), Image.Resampling.LANCZOS)
+            buf = io.BytesIO()
+            img.save(buf, format="JPEG", quality=85, optimize=True)
+    except (OSError, ValueError, Image.DecompressionBombError):
+        return "data:invalido"
+    return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
 
 
 class ErroAPI(Exception):
@@ -85,9 +106,11 @@ class XanoAPI:
     def atualizar_perfil(self, dados):
         return self._req("PATCH", "/auth/me", json=dados)
 
-    def enviar_foto(self, nome, conteudo, tipo):
-        """Envia a foto de perfil (multipart, campo `foto`) e devolve o perfil com `foto_url`."""
-        return self._req("POST", "/auth/me/foto", files={"foto": (nome, conteudo, tipo)})
+    def enviar_foto(self, conteudo):
+        """Reduz a foto para 256x256 em JPEG, envia como data URL (campo `foto`) e devolve o perfil com `foto_url`.
+
+        Se o arquivo não for uma imagem, o texto enviado não é uma data URL JPEG e o Xano recusa com a mensagem dele."""
+        return self._req("POST", "/auth/me/foto", json={"foto": foto_data_url(conteudo)})
 
     def remover_foto(self):
         return self._req("DELETE", "/auth/me/foto")

@@ -1,87 +1,45 @@
-// Envia ou troca a foto de perfil do usuário autenticado (multipart, campo "foto")
+// Envia ou troca a foto de perfil do usuário autenticado.
+// A foto chega como data URL JPEG (campo "foto") e fica gravada no próprio registro (Foto_dados):
+// o armazenamento de imagens do plano free do Xano coloca marca d'água nas fotos
 query "auth/me/foto" verb=POST {
   api_group = "Authentication"
   auth = "user"
 
   input {
-    file? foto
+    text? foto
   }
 
   stack {
-    precondition ($input.foto != null) {
+    precondition ($input.foto != null && $input.foto != "") {
       error_type = "inputerror"
       error = "Envie uma foto."
     }
-  
-    var $nova {
-      value = null
-    }
-  
-    // create_image é o único upload disponível no plano free (create_attachment é bloqueado).
-    // Ele recusa o que não é imagem com erro 500; a recusa vira um erro de validação
-    try_catch {
-      try {
-        storage.create_image {
-          value = $input.foto
-          access = "public"
-          filename = $input.foto.name
-        } as $imagem
-      
-        var.update $nova {
-          value = $imagem
-        }
-      }
-    
-      catch {
-        var.update $nova {
-          value = null
-        }
-      }
-    }
-  
-    precondition ($nova != null) {
+
+    // Confere o começo da data URL ("data:image/jpeg;base64," tem 23 caracteres)
+    precondition (($input.foto|substr:0:23) == "data:image/jpeg;base64,") {
       error_type = "inputerror"
       error = "Envie uma imagem JPEG, PNG ou WEBP."
     }
-  
-    // Confere o tipo e o tamanho medidos pelo Xano; se a foto for inválida, apaga o arquivo
-    conditional {
-      if ((["image/jpeg", "image/png", "image/webp"]|in:$nova.mime) == false) {
-        storage.delete_file {
-          pathname = $nova.path
-        }
-      
-        precondition (false) {
-          error_type = "inputerror"
-          error = "Envie uma imagem JPEG, PNG ou WEBP."
-        }
-      }
-    
-      elseif ($nova.size > 2097152) {
-        storage.delete_file {
-          pathname = $nova.path
-        }
-      
-        precondition (false) {
-          error_type = "inputerror"
-          error = "A foto deve ter no máximo 2 MB."
-        }
-      }
+
+    // ~300 mil caracteres de base64 = ~220 KB de imagem (a foto reduzida a 256x256 tem bem menos)
+    precondition (($input.foto|strlen) <= 300000) {
+      error_type = "inputerror"
+      error = "A foto é grande demais."
     }
-  
+
     db.get user {
       field_name = "id"
       field_value = $auth.id
       output = ["id", "Foto"]
     } as $atual
-  
+
     db.edit user {
       field_name = "id"
       field_value = $auth.id
-      data = {Foto: $nova}
+      data = {Foto_dados: $input.foto, Foto: null}
     } as $editado
-  
-    // A foto anterior só é apagada depois que a nova foi gravada
+
+    // Se havia uma foto antiga no armazenamento, apaga o arquivo depois de gravar a nova
     conditional {
       if ($atual.Foto != null && $atual.Foto.path != null) {
         storage.delete_file {
@@ -89,7 +47,7 @@ query "auth/me/foto" verb=POST {
         }
       }
     }
-  
+
     db.get user {
       field_name = "id"
       field_value = $auth.id
@@ -105,16 +63,18 @@ query "auth/me/foto" verb=POST {
         "Telefone"
         "Sobre_mim"
         "Foto"
+        "Foto_dados"
       ]
     } as $user
-  
+
     function.run "StudyMatch/url_foto" {
-      input = {foto: $user.Foto}
+      input = {foto: $user.Foto, foto_dados: $user.Foto_dados}
     } as $foto_url
   }
 
   response = $user
     |unset:"Foto"
+    |unset:"Foto_dados"
     |set:"foto_url":$foto_url
   guid = "aVnTmqmCwF9QSmGjUhy9bRtXXgo"
 }

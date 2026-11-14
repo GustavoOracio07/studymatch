@@ -23,11 +23,12 @@ query "auth/me" verb=GET {
         "Telefone"
         "Sobre_mim"
         "Foto"
+        "Foto_dados"
       ]
     } as $user
   
     function.run "StudyMatch/url_foto" {
-      input = {foto: $user.Foto}
+      input = {foto: $user.Foto, foto_dados: $user.Foto_dados}
     } as $foto_url
   
     // Create an event log for get user record
@@ -42,6 +43,7 @@ query "auth/me" verb=GET {
 
   response = $user
     |unset:"Foto"
+    |unset:"Foto_dados"
     |set:"foto_url":$foto_url
   tags = ["xano:quick-start"]
   guid = "zUyJWgp9QlQX4aqCo5rbXRiIHkU"

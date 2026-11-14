@@ -31,8 +31,12 @@ table user {
     text Telefone? filters=trim
     text Sobre_mim? filters=trim
   
-    // Foto de perfil (arquivo público no armazenamento do Xano)
+    // Foto de perfil antiga (arquivo no armazenamento do Xano, que no plano free leva marca d'água).
+    // Só é lida enquanto o aluno não envia uma foto nova; os envios novos vão para Foto_dados.
     image? Foto?
+
+    // Foto de perfil como data URL JPEG (data:image/jpeg;base64,...), já reduzida pelo frontend
+    text? Foto_dados?
   }
 
   index = [

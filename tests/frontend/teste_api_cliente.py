@@ -2,15 +2,18 @@
 
 Uso: python tests/frontend/teste_api_cliente.py
 """
+import base64
+import io
 import json
 import pathlib
 import sys
 
 import requests
+from PIL import Image
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2]))
 
-from studymatch.api import MSG_LIMITE, MSG_REDE, MSG_SESSAO_EXPIRADA, ErroAPI, XanoAPI  # noqa: E402
+from studymatch.api import MSG_LIMITE, MSG_REDE, MSG_SESSAO_EXPIRADA, ErroAPI, XanoAPI, foto_data_url  # noqa: E402
 
 
 class RespostaFalsa:
@@ -105,11 +108,17 @@ for aceitar, status in ((True, "match"), (False, "recusado")):
     check(f"responder_interesse(aceitar={aceitar}) envia status {status}",
           http.chamadas[0][:2] == ("PATCH", "https://x/match_interesse/3") and http.chamadas[0][3]["json"] == {"status": status})
 
-http = HttpFalso(RespostaFalsa(200, {"id": 1, "foto_url": "https://x/vault/f.png"}))
-r = XanoAPI("t", base="https://x", http=http).enviar_foto("f.png", b"PNG", "image/png")
-check("enviar_foto faz POST multipart no campo foto",
-      http.chamadas[0][:2] == ("POST", "https://x/auth/me/foto") and "json" not in http.chamadas[0][3]
-      and http.chamadas[0][3]["files"] == {"foto": ("f.png", b"PNG", "image/png")} and r["foto_url"])
+_buf = io.BytesIO()
+Image.new("RGBA", (800, 400), (120, 40, 200, 255)).save(_buf, "PNG")
+http = HttpFalso(RespostaFalsa(200, {"id": 1, "foto_url": "data:image/jpeg;base64,xx"}))
+r = XanoAPI("t", base="https://x", http=http).enviar_foto(_buf.getvalue())
+enviado = http.chamadas[0][3]["json"]["foto"]
+check("enviar_foto faz POST JSON com a data URL JPEG no campo foto",
+      http.chamadas[0][:2] == ("POST", "https://x/auth/me/foto") and enviado.startswith("data:image/jpeg;base64,")
+      and r["foto_url"])
+reduzida = Image.open(io.BytesIO(base64.b64decode(enviado.split(",", 1)[1])))
+check("enviar_foto reduz a foto para 256x256 em JPEG", reduzida.size == (256, 256) and reduzida.format == "JPEG")
+check("arquivo que não é imagem vira texto inválido (o Xano recusa)", foto_data_url(b"%PDF-1.4") == "data:invalido")
 
 http = HttpFalso(RespostaFalsa(200))
 XanoAPI("t", base="https://x", http=http).remover_foto()
