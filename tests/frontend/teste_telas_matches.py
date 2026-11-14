@@ -43,6 +43,10 @@ at.button(key=f"aceitar_{mi_ba}").click().run()
 check("aceitar mostra confirmação", "Match confirmado com Teste!" in tudo(at), str([e.value for e in at.error]) + str(at.exception))
 check("aceito vai para Confirmados com telefone", f"Telefone: {tel_b}" in tudo(at)
       and [t.label for t in at.tabs][2] == "Confirmados (1)", tudo(at))
+links = [e.proto for e in at.get("link_button")]
+check("confirmado tem o botão Chamar no WhatsApp com o número do colega",
+      [(p.label, p.url.split("?")[0]) for p in links] == [("Chamar no WhatsApp", f"https://wa.me/55{tel_b}")],
+      str([(p.label, p.url) for p in links]))
 
 at.button(key=f"recusar_{mi_ca}").click().run()
 check("recusar mostra confirmação", "Pedido de Teste recusado." in tudo(at), tudo(at))
