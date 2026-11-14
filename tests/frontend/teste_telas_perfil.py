@@ -82,9 +82,16 @@ r = req("GET", "/disponibilidade", token)
 check("horário removido no Xano", r.json() == [], r.text)
 
 # --- foto (o AppTest não preenche o seletor de arquivo, então a foto é enviada pela API)
-check("sem foto mostra as iniciais", any('class="sm-avatar sm-avatar-grande"' in m.value and ">TT<" in m.value
+check("sem foto mostra as iniciais", any('sm-avatar-perfil"' in m.value and ">TT<" in m.value
                                          for m in at.markdown), str([m.value for m in at.markdown][:5]))
 check("sem foto, Remover foto fica desabilitado", botao(at, "Remover foto").disabled)
+check("sem foto, o botão é Adicionar foto", any(b.label == "Adicionar foto" for b in at.button))
+botao(at, "Adicionar foto").click().run()
+check("Adicionar foto abre a escolha com Salvar desabilitado e Cancelar",
+      botao(at, "Salvar foto").disabled and any(b.label == "Cancelar" for b in at.button))
+botao(at, "Cancelar").click().run()
+check("Cancelar volta aos botões normais", any(b.label == "Adicionar foto" for b in at.button)
+      and not any(b.label == "Salvar foto" for b in at.button))
 r = req("POST", "/auth/me/foto", token, files={"foto": ("f.png", PNG, "image/png")})
 foto_url = r.json().get("foto_url")
 at = AppTest.from_file(str(RAIZ / "app.py"), default_timeout=60)
@@ -93,6 +100,7 @@ at.run()
 at.switch_page("paginas/perfil.py").run()
 check("com foto mostra a imagem", foto_url and any(f'src="{foto_url}"' in m.value for m in at.markdown),
       str([m.value for m in at.markdown][:5]))
+check("com foto, o botão é Alterar foto", any(b.label == "Alterar foto" for b in at.button))
 botao(at, "Remover foto").click().run()
 check("remover foto mostra sucesso", "Foto removida." in textos(at), textos(at))
 check("depois de remover volta às iniciais", not any("sm-avatar-foto" in m.value for m in at.markdown))

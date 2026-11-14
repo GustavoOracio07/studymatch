@@ -294,3 +294,72 @@ section[data-testid="stSidebar"][aria-expanded="true"] {
   width: 100%;
   justify-content: flex-start;
 }
+
+/* --- Cartão da foto de perfil (Meu perfil) --- */
+.st-key-cartao_foto {
+  margin-bottom: 0.75rem;
+}
+.sm-foto-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+.sm-foto-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--sm-roxo-claro);
+  color: var(--sm-roxo);
+}
+p.sm-foto-titulo {
+  font-weight: 600;
+  font-size: 1.02rem;
+  margin: 0;
+  color: var(--sm-texto);
+}
+p.sm-foto-sub {
+  font-size: 0.85rem;
+  margin: 0;
+  color: var(--sm-cinza);
+}
+.sm-avatar-perfil {
+  width: 112px;
+  height: 112px;
+  font-size: 2rem;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 0 0 2px var(--sm-roxo-claro), 0 4px 12px rgba(16, 24, 40, 0.10);
+}
+.sm-foto-info {
+  background: var(--sm-fundo);
+  border: 1px solid var(--sm-borda);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+}
+p.sm-foto-info-titulo {
+  font-weight: 600;
+  margin: 0 0 0.15rem;
+  color: var(--sm-texto);
+}
+p.sm-foto-info-sub {
+  font-size: 0.85rem;
+  margin: 0;
+  color: var(--sm-cinza);
+}
+.st-key-acoes_foto {
+  gap: 0.5rem;
+  align-items: center;
+}
+.st-key-cartao_foto [data-testid="stFileUploaderDropzone"] {
+  background: var(--sm-fundo);
+  border: 1.5px dashed var(--sm-borda);
+  border-radius: 10px;
+  padding: 0.6rem 0.9rem;
+}
+/* O limite real é 2 MB (validado no app e no Xano); esconde o "200MB per file" padrão do Streamlit */
+.st-key-cartao_foto [data-testid="stFileUploaderDropzoneInstructions"] small {
+  display: none;
+}

@@ -172,3 +172,17 @@ header[data-testid="stHeader"] { background: transparent; }
 [role="listbox"] {
   border-color: #353C52 !important;
 }
+
+/* Cartão da foto de perfil */
+.sm-foto-icone { background: var(--sm-roxo-claro); color: #A99BFF; }
+.sm-avatar-perfil {
+  border-color: var(--sm-cartao);
+  box-shadow: 0 0 0 2px #3A3270, 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+.sm-foto-info,
+.st-key-cartao_foto [data-testid="stFileUploaderDropzone"] {
+  background: var(--sm-campo) !important;
+  border-color: #353C52 !important;
+}
+.st-key-cartao_foto [data-testid="stFileUploaderDropzone"] span,
+.st-key-cartao_foto [data-testid="stFileUploaderFile"] div { color: var(--sm-texto) !important; }

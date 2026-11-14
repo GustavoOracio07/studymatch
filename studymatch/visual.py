@@ -2,6 +2,7 @@
 
 Só apresentação. Todo texto vindo de usuários passa por `esc()` antes de ir para o HTML.
 """
+import base64
 import html
 import pathlib
 
@@ -79,9 +80,30 @@ def iniciais(nome, sobrenome=""):
     return esc("".join(letras[:1] + letras[-1:]).upper() if len(letras) > 1 else "".join(letras).upper() or "?")
 
 
-def avatar(nome, sobrenome, semente, grande=False, foto_url=None):
-    """Foto de perfil redonda ou, sem foto, um círculo colorido com as iniciais."""
+def data_url(arquivo):
+    """Arquivo enviado no st.file_uploader -> data URL, para mostrar a prévia antes de salvar."""
+    return f"data:{arquivo.type};base64,{base64.b64encode(arquivo.getvalue()).decode()}"
+
+
+def titulo_foto():
+    return ('<div class="sm-foto-cabecalho">'
+            f'<span class="sm-foto-icone">{icone("usuario", 18)}</span>'
+            '<div><p class="sm-foto-titulo">Foto de perfil</p>'
+            '<p class="sm-foto-sub">Aparece para os colegas compatíveis e nos seus matches.</p></div></div>')
+
+
+def info_foto():
+    return ('<div class="sm-foto-info"><p class="sm-foto-info-titulo">Sua foto de perfil</p>'
+            '<p class="sm-foto-info-sub">Arquivo máximo: 2 MB • Formatos aceitos: JPG, PNG, WEBP</p></div>')
+
+
+def avatar(nome, sobrenome, semente, grande=False, foto_url=None, perfil=False):
+    """Foto de perfil redonda ou, sem foto, um círculo colorido com as iniciais.
+
+    `perfil=True` é o tamanho maior usado no cartão de foto do Meu perfil."""
     classe = "sm-avatar sm-avatar-grande" if grande else "sm-avatar"
+    if perfil:
+        classe += " sm-avatar-perfil"
     if foto_url:
         return f'<img class="{classe} sm-avatar-foto" src="{esc(foto_url)}" alt="Foto de {esc(nome)}">'
     cor = _CORES_AVATAR[(semente or 0) % len(_CORES_AVATAR)]
