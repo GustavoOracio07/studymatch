@@ -30,6 +30,9 @@ table user {
     int Semestre?
     text Telefone? filters=trim
     text Sobre_mim? filters=trim
+  
+    // Foto de perfil (arquivo público no armazenamento do Xano)
+    image? Foto?
   }
 
   index = [

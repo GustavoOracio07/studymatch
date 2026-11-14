@@ -50,6 +50,7 @@ python tests/api/teste_seguranca.py          # autenticação e controle de aces
 python tests/api/teste_perfil.py             # perfil, disciplinas e disponibilidade
 python tests/api/teste_busca.py              # compatibilidade e interesse
 python tests/api/teste_matches.py            # meus matches e telefone após o match
+python tests/api/teste_foto.py               # foto de perfil (envio, troca, remoção)
 python tests/frontend/teste_telas_base.py    # login, cadastro e logout
 python tests/frontend/teste_telas_perfil.py
 python tests/frontend/teste_telas_busca.py

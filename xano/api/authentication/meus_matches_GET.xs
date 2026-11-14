@@ -43,12 +43,24 @@ query meus_matches verb=GET {
         db.get user {
           field_name = "id"
           field_value = $colega_id
-          output = ["id", "Name", "Sobrenome", "Semestre", "Sobre_mim", "Telefone"]
+          output = [
+            "id"
+            "Name"
+            "Sobrenome"
+            "Semestre"
+            "Sobre_mim"
+            "Telefone"
+            "Foto"
+          ]
         } as $colega
       
         // Records of students who deleted their account are ignored
         conditional {
           if ($colega != null) {
+            function.run "StudyMatch/url_foto" {
+              input = {foto: $colega.Foto}
+            } as $foto_url
+          
             var $item {
               value = {
                 interesse_id: $interesse.id
@@ -59,6 +71,7 @@ query meus_matches verb=GET {
                 sobrenome   : $colega.Sobrenome
                 semestre    : $colega.Semestre
                 sobre_mim   : $colega.Sobre_mim
+                foto_url    : $foto_url
               }
             }
           

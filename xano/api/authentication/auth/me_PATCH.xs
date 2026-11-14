@@ -90,10 +90,17 @@ query "auth/me" verb=PATCH {
         "Semestre"
         "Telefone"
         "Sobre_mim"
+        "Foto"
       ]
     } as $user
+  
+    function.run "StudyMatch/url_foto" {
+      input = {foto: $user.Foto}
+    } as $foto_url
   }
 
   response = $user
+    |unset:"Foto"
+    |set:"foto_url":$foto_url
   guid = "PA43xyCa95HewNte8EF1CP5BvnI"
 }

@@ -172,6 +172,10 @@ section[data-testid="stSidebar"][aria-expanded="true"] {
   height: 72px;
   font-size: 1.4rem;
 }
+.sm-avatar-foto {
+  object-fit: cover;
+  background: #E9E5FB;
+}
 .sm-nome-linha {
   display: flex;
   flex-wrap: wrap;

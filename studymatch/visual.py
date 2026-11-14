@@ -79,9 +79,12 @@ def iniciais(nome, sobrenome=""):
     return esc("".join(letras[:1] + letras[-1:]).upper() if len(letras) > 1 else "".join(letras).upper() or "?")
 
 
-def avatar(nome, sobrenome, semente, grande=False):
-    cor = _CORES_AVATAR[(semente or 0) % len(_CORES_AVATAR)]
+def avatar(nome, sobrenome, semente, grande=False, foto_url=None):
+    """Foto de perfil redonda ou, sem foto, um círculo colorido com as iniciais."""
     classe = "sm-avatar sm-avatar-grande" if grande else "sm-avatar"
+    if foto_url:
+        return f'<img class="{classe} sm-avatar-foto" src="{esc(foto_url)}" alt="Foto de {esc(nome)}">'
+    cor = _CORES_AVATAR[(semente or 0) % len(_CORES_AVATAR)]
     return f'<div class="{classe}" style="background:{cor}">{iniciais(nome, sobrenome)}</div>'
 
 

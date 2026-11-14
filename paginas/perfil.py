@@ -36,6 +36,38 @@ with aba_dados:
     nomes_cursos = list(id_por_curso)
     curso_atual = curso_por_id.get(aluno.get("curso_id"))
 
+    # Foto de perfil: fica fora do formulário para não depender do botão "Salvar dados"
+    col_avatar, col_foto = st.columns([1, 4], vertical_alignment="center")
+    visual.html_(visual.avatar(aluno.get("Name"), aluno.get("Sobrenome"), aluno.get("id"), grande=True,
+                        foto_url=aluno.get("foto_url")), col_avatar)
+    arquivo = col_foto.file_uploader("Foto de perfil", type=["jpg", "jpeg", "png", "webp"],
+                                     help="JPEG, PNG ou WEBP de até 2 MB. Aparece para os colegas compatíveis.",
+                                     key=f"foto_{st.session_state.get('foto_envios', 0)}")
+    bt_salvar, bt_remover = col_foto.columns(2)
+    salvar_foto = bt_salvar.button("Salvar foto", disabled=arquivo is None, use_container_width=True)
+    remover_foto = bt_remover.button("Remover foto", disabled=not aluno.get("foto_url"), use_container_width=True)
+
+    if salvar_foto and arquivo.size > 2 * 1024 * 1024:
+        st.error("A foto deve ter no máximo 2 MB.")
+    elif salvar_foto or remover_foto:
+        try:
+            if salvar_foto:
+                atualizado = api.enviar_foto(arquivo.name, arquivo.getvalue(), arquivo.type)
+                mensagem = "Foto salva."
+            else:
+                api.remover_foto()
+                atualizado = {**aluno, "foto_url": None}
+                mensagem = "Foto removida."
+        except ErroAPI as e:
+            sessao.mostrar_erro(e)
+        else:
+            st.session_state["aluno"] = atualizado
+            sessao.invalidar("compativeis")
+            st.session_state["perfil_sucesso"] = mensagem
+            # Nova chave limpa o seletor de arquivo depois do envio
+            st.session_state["foto_envios"] = st.session_state.get("foto_envios", 0) + 1
+            st.rerun()
+
     with st.form("dados"):
         col1, col2 = st.columns(2)
         nome = col1.text_input("Nome *", value=aluno.get("Name") or "")

@@ -37,7 +37,9 @@ def resumo_horarios(faixas):
 
 @st.dialog("Perfil do colega", width="medium")
 def ver_perfil(colega):
-    html_(f'<div class="sm-info">{visual.avatar(colega["nome"], colega["sobrenome"], colega["usuario_id"], grande=True)}'
+    foto = visual.avatar(colega["nome"], colega["sobrenome"], colega["usuario_id"], grande=True,
+                         foto_url=colega.get("foto_url"))
+    html_(f'<div class="sm-info">{foto}'
           f'<div><div class="sm-nome-linha"><span class="sm-nome">{esc(colega["nome"])} {esc(colega["sobrenome"])}'
           f'</span>{visual.selo(colega["percentual"])}</div>'
           + linha("curso", f"{esc(sigla)} • {esc(colega['semestre'])}º semestre")
@@ -103,7 +105,7 @@ with principal:
             horarios = esc(resumo_horarios(colega["horarios_comuns"])) or "Nenhum horário em comum"
             html_(
                 '<div class="sm-info">'
-                + visual.avatar(colega["nome"], colega["sobrenome"], colega["usuario_id"])
+                + visual.avatar(colega["nome"], colega["sobrenome"], colega["usuario_id"], foto_url=colega.get("foto_url"))
                 + '<div><div class="sm-nome-linha">'
                 + f'<span class="sm-nome">{esc(colega["nome"])} {esc(colega["sobrenome"])}</span>'
                 + visual.selo(colega["percentual"]) + "</div>"
@@ -168,7 +170,7 @@ with lateral, st.container(key="painel_perfil"):
 
     html_(
         '<div class="sm-perfil-topo">'
-        + visual.avatar(aluno.get("Name"), aluno.get("Sobrenome"), aluno.get("id"))
+        + visual.avatar(aluno.get("Name"), aluno.get("Sobrenome"), aluno.get("id"), foto_url=aluno.get("foto_url"))
         + f'<div><div class="sm-nome">{esc(aluno.get("Name"))} {esc(aluno.get("Sobrenome"))}</div>'
         + f'<div class="sm-sobre-texto">{esc(sigla)} • {esc(aluno.get("Semestre"))}º semestre</div></div></div>'
         + f'<div class="sm-sobre-texto">Seu perfil está {completo}% completo</div>'
