@@ -2,6 +2,7 @@ import streamlit as st
 
 from studymatch import sessao, visual
 from studymatch.api import ErroAPI, listar_cursos
+from studymatch.dominio import link_whatsapp
 from studymatch.visual import esc, html_, linha
 
 ORDENACOES = ["Maior compatibilidade", "Menor compatibilidade", "Nome (A–Z)"]
@@ -132,5 +133,10 @@ with aba_confirmados:
     if not confirmados:
         st.info("Quando um match for confirmado, o telefone do colega aparece aqui.")
     for item in confirmados:
+        def botoes(item=item):
+            url = link_whatsapp(item.get("telefone"), item["nome"])
+            if url:
+                st.link_button("Chamar no WhatsApp", url, type="primary", icon=":material/chat:")
+
         cartao(item, linha("check", "Match confirmado", "sm-destaque")
-               + linha("telefone", f"Telefone: {esc(item['telefone'])}"))
+               + linha("telefone", f"Telefone: {esc(item['telefone'])}"), botoes)
