@@ -16,6 +16,9 @@ from apoio import BASE, apagar_aluno, check, novo_aluno, req, resumo  # noqa: E4
 from PIL import Image  # noqa: E402
 from streamlit.testing.v1 import AppTest  # noqa: E402
 
+sys.path.insert(0, str(RAIZ))
+from studymatch.api import foto_data_url  # noqa: E402
+
 os.environ.setdefault("XANO_API_URL", BASE)
 _buf = io.BytesIO()
 Image.new("RGB", (32, 32), "purple").save(_buf, "PNG")
@@ -92,7 +95,7 @@ check("Adicionar foto abre a escolha com Salvar desabilitado e Cancelar",
 botao(at, "Cancelar").click().run()
 check("Cancelar volta aos botões normais", any(b.label == "Adicionar foto" for b in at.button)
       and not any(b.label == "Salvar foto" for b in at.button))
-r = req("POST", "/auth/me/foto", token, files={"foto": ("f.png", PNG, "image/png")})
+r = req("POST", "/auth/me/foto", token, json={"foto": foto_data_url(PNG)})
 foto_url = r.json().get("foto_url")
 at = AppTest.from_file(str(RAIZ / "app.py"), default_timeout=60)
 at.session_state["token"] = token

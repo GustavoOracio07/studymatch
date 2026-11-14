@@ -75,7 +75,7 @@ with aba_dados:
     elif salvar_foto or remover_foto:
         try:
             if salvar_foto:
-                atualizado = api.enviar_foto(arquivo.name, arquivo.getvalue(), arquivo.type)
+                atualizado = api.enviar_foto(arquivo.getvalue())
                 mensagem = "Foto salva."
             else:
                 api.remover_foto()

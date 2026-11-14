@@ -51,6 +51,7 @@ query meus_matches verb=GET {
             "Sobre_mim"
             "Telefone"
             "Foto"
+            "Foto_dados"
           ]
         } as $colega
       
@@ -58,7 +59,7 @@ query meus_matches verb=GET {
         conditional {
           if ($colega != null) {
             function.run "StudyMatch/url_foto" {
-              input = {foto: $colega.Foto}
+              input = {foto: $colega.Foto, foto_dados: $colega.Foto_dados}
             } as $foto_url
           
             var $item {

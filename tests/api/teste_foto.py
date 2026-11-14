@@ -3,13 +3,18 @@
 Cria alunos de teste e apaga todos no final.
 Uso: python tests/api/teste_foto.py
 """
+import base64
 import io
+import pathlib
 import random
+import sys
 
-import requests
 from PIL import Image
 
 from apoio import apagar_aluno, check, novo_aluno, req, resumo
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2]))
+from studymatch.api import foto_data_url  # noqa: E402
 
 
 def imagem(formato, lado=64):
@@ -20,19 +25,17 @@ def imagem(formato, lado=64):
     return buf.getvalue()
 
 
-def enviar(token, nome, conteudo, mime):
-    return req("POST", "/auth/me/foto", token, files={"foto": (nome, conteudo, mime)})
+def enviar(token, conteudo):
+    """Envia como o frontend: foto reduzida a 256x256 em data URL JPEG."""
+    return req("POST", "/auth/me/foto", token, json={"foto": foto_data_url(conteudo)})
 
 
-def abre(url, conteudo):
-    """O Xano recodifica a imagem ao guardar, então compara o formato e as dimensões, não os bytes."""
-    if not url:
+def abre(url):
+    """A foto fica no próprio registro: foto_url é a data URL JPEG 256x256 (sem passar pelo armazenamento do Xano)."""
+    if not url or not url.startswith("data:image/jpeg;base64,"):
         return False
-    r = requests.get(url, timeout=30)
-    if r.status_code != 200 or not r.headers.get("content-type", "").startswith("image/"):
-        return False
-    recebida, enviada = Image.open(io.BytesIO(r.content)), Image.open(io.BytesIO(conteudo))
-    return recebida.size == enviada.size
+    img = Image.open(io.BytesIO(base64.b64decode(url.split(",", 1)[1])))
+    return img.format == "JPEG" and img.size == (256, 256)
 
 
 ta, ida, _, _ = novo_aluno("fotoa")
@@ -45,25 +48,25 @@ check("perfil sem foto traz foto_url nulo", r.status_code == 200 and "foto_url" 
       and r.json()["foto_url"] is None and "Foto" not in r.json(), r.text)
 
 png = imagem("PNG")
-r = enviar(ta, "foto.png", png, "image/png")
+r = enviar(ta, png)
 url1 = r.json().get("foto_url") if r.status_code == 200 else None
 check("enviar PNG válido -> 200 com foto_url", r.status_code == 200 and url1, r.text)
-check("foto_url abre a imagem enviada", abre(url1, png), url1)
+check("foto_url é a foto 256x256 em JPEG, sem marca d'água", abre(url1), url1)
 check("resposta não traz o objeto Foto", "Foto" not in r.json(), r.text)
 
 jpg = imagem("JPEG")
-r = enviar(ta, "outra.jpg", jpg, "image/jpeg")
+r = enviar(ta, jpg)
 url2 = r.json().get("foto_url") if r.status_code == 200 else None
 check("trocar a foto -> 200 com nova URL", r.status_code == 200 and url2 and url2 != url1, r.text)
-check("nova foto abre", abre(url2, jpg), url2)
+check("nova foto abre", abre(url2), url2)
 
-r = enviar(ta, "doc.pdf", b"%PDF-1.4\n%fake\n", "application/pdf")
+r = req("POST", "/auth/me/foto", ta, json={"foto": "data:application/pdf;base64,JVBERi0xLjQK"})
 check("PDF -> 400 com mensagem", r.status_code == 400 and "JPEG, PNG ou WEBP" in r.text, r.text)
-grande = imagem("JPEG", 1200)
-assert len(grande) > 2 * 1024 * 1024, len(grande)
-r = enviar(ta, "grande.jpg", grande, "image/jpeg")
-check("imagem acima de 2 MB -> 400 com mensagem", r.status_code == 400 and "2 MB" in r.text, r.text)
-r = req("POST", "/auth/me/foto", ta, files={"outro": ("x.txt", b"x", "text/plain")})
+r = req("POST", "/auth/me/foto", ta, json={"foto": "data:image/jpeg;base64," + "A" * 300000})
+check("foto grande demais -> 400 com mensagem", r.status_code == 400 and "grande demais" in r.text, r.text)
+r = enviar(ta, b"%PDF-1.4 nao e imagem")
+check("arquivo que não é imagem, enviado pelo cliente -> 400", r.status_code == 400 and "JPEG, PNG ou WEBP" in r.text, r.text)
+r = req("POST", "/auth/me/foto", ta, json={})
 check("envio sem o campo foto -> 400", r.status_code == 400, r.text)
 r = req("GET", "/auth/me", ta)
 check("foto atual não muda após erros", r.json().get("foto_url") == url2, r.text)
@@ -90,15 +93,15 @@ check("após remover, foto_url é nulo", r.json().get("foto_url", "ausente") is 
 r = req("DELETE", "/auth/me/foto", ta)
 check("remover sem ter foto -> 200", r.status_code == 200, r.text)
 
-r = req("POST", "/auth/me/foto", files={"foto": ("foto.png", png, "image/png")})
+r = req("POST", "/auth/me/foto", json={"foto": foto_data_url(png)})
 check("POST foto sem token -> 401", r.status_code == 401, r.text)
 r = req("DELETE", "/auth/me/foto")
 check("DELETE foto sem token -> 401", r.status_code == 401, r.text)
 
 # a exclusão da conta funciona com foto
-r = enviar(tb, "b.png", png, "image/png")
+r = enviar(tb, png)
 url_b = r.json().get("foto_url") if r.status_code == 200 else None
-check("B envia foto", abre(url_b, png), r.text)
+check("B envia foto", abre(url_b), r.text)
 r = apagar_aluno(tb)
 check("B com foto apaga a conta -> 200", r.status_code == 200, r.text)
 r = req("POST", "/auth/login", json={"email": email_b, "password": "senha1234"})

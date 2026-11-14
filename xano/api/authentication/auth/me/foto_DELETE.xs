@@ -10,19 +10,20 @@ query "auth/me/foto" verb=DELETE {
     db.get user {
       field_name = "id"
       field_value = $auth.id
-      output = ["id", "Foto"]
+      output = ["id", "Foto", "Foto_dados"]
     } as $atual
-  
+
     conditional {
-      if ($atual.Foto != null) {
+      if ($atual.Foto != null || $atual.Foto_dados != null) {
         db.edit user {
           field_name = "id"
           field_value = $auth.id
-          data = {Foto: null}
+          data = {Foto: null, Foto_dados: null}
         } as $editado
-      
+
+        // Foto antiga no armazenamento: apaga também o arquivo
         conditional {
-          if ($atual.Foto.path != null) {
+          if ($atual.Foto != null && $atual.Foto.path != null) {
             storage.delete_file {
               pathname = $atual.Foto.path
             }
