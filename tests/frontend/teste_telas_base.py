@@ -12,7 +12,7 @@ import sys
 RAIZ = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RAIZ / "tests" / "api"))
 
-from apoio import BASE, apagar_aluno, check, novo_aluno, resumo  # noqa: E402
+from apoio import BASE, apagar_aluno, check, novo_aluno, registrar, resumo  # noqa: E402
 from streamlit.testing.v1 import AppTest  # noqa: E402
 
 os.environ.setdefault("XANO_API_URL", BASE)
@@ -88,6 +88,7 @@ at.switch_page("paginas/cadastro.py").run()
 cadastrar(at, "Tela", email, f"117{n}")
 check("cadastro entra logado no Início", logado_como(at, "Tela"), textos(at))
 token_tela = at.session_state["token"]
+registrar(token_tela)
 
 # --- logout
 at.switch_page("paginas/sair.py").run()
