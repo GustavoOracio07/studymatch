@@ -1,7 +1,7 @@
 import streamlit as st
 
 from studymatch import sessao, visual
-from studymatch.api import ErroAPI, listar_cursos
+from studymatch.api import ErroAPI, listar_cursos, listar_disciplinas
 from studymatch.dominio import link_whatsapp
 from studymatch.visual import esc, html_, linha
 
@@ -16,6 +16,7 @@ try:
     with st.spinner("Carregando..."):
         aluno = sessao.aluno_atual()
         cursos = {c["id"]: c["nome"] for c in listar_cursos()}
+        nome_disciplina = {d["id"]: d["nome"] for d in listar_disciplinas()}
         matches = sessao.dados_da_sessao("meus_matches", api.meus_matches)
 except ErroAPI as e:
     sessao.mostrar_erro(e)
@@ -134,7 +135,8 @@ with aba_confirmados:
         st.info("Quando um match for confirmado, o telefone do colega aparece aqui.")
     for item in confirmados:
         def botoes(item=item):
-            url = link_whatsapp(item.get("telefone"), item["nome"])
+            disciplinas = [nome_disciplina[i] for i in item.get("disciplinas_comuns") or [] if i in nome_disciplina]
+            url = link_whatsapp(item.get("telefone"), item["nome"], disciplinas)
             if url:
                 st.link_button("Chamar no WhatsApp", url, type="primary", icon=":material/chat:")
 
