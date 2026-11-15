@@ -1,6 +1,8 @@
 # StudyMatch
 
-Aplicação web que conecta alunos com dificuldades acadêmicas em comum para estudarem juntos. O aluno informa as disciplinas em que tem dificuldade e os horários livres, e o sistema sugere colegas compatíveis. A compatibilidade é calculada assim: 60% pelas disciplinas em comum e 40% pelos horários em comum. Quando os dois demonstram interesse, o match é confirmado e o telefone do colega é liberado.
+Aplicação web que conecta alunos com dificuldades acadêmicas em comum para estudarem juntos. O aluno informa as disciplinas em que tem dificuldade e os horários livres, e o sistema sugere colegas compatíveis. A compatibilidade é calculada assim: 60% pelas disciplinas em comum e 40% pelos horários em comum. Quando os dois demonstram interesse, o match é confirmado e o telefone do colega é liberado, com um botão "Chamar no WhatsApp" que abre a conversa com uma mensagem pronta citando as disciplinas em comum. O aluno também pode ter foto de perfil, e a interface tem modo claro e escuro.
+
+App publicado: https://studymatch-y50f.onrender.com/
 
 Projeto Integrador — Innovation Lab: Advanced No/Low Code — ADS, Faculdade Impacta, 2026.2.
 

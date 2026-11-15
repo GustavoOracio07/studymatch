@@ -23,8 +23,9 @@ Matéria que pertence a um curso.
 
 ## Aluno (`user`)
 Estudante que usa o sistema. Usa a tabela de autenticação do Xano.
-- **Informações:** nome, sobrenome, e-mail, senha, telefone/contato, curso, semestre, sobre mim.
-- **Regras:** e-mail único; telefone único; semestre de 1 a 12.
+- **Informações:** nome, sobrenome, e-mail, senha, telefone/contato, curso, semestre, sobre mim e foto de perfil (opcional).
+- **Foto de perfil:** fica no próprio registro do aluno (`Foto_dados`), como imagem JPEG de 256x256 em data URL, reduzida pelo frontend antes do envio. Não usa o armazenamento de imagens do Xano, que aplica marca d'água. O campo `Foto` guarda apenas fotos antigas, de antes dessa mudança. A API devolve só `foto_url`.
+- **Regras:** e-mail único; telefone único; semestre de 1 a 12; a foto aceita só data URLs JPEG de até 300 mil caracteres.
 - **Relacionamentos:** pertence a um curso; tem várias dificuldades, várias disponibilidades e vários interesses de match.
 
 ## Dificuldade em Disciplina (`usuario_disciplina`)
@@ -48,3 +49,5 @@ Registro de que um aluno demonstrou interesse em estudar com outro.
 - **Cálculo da compatibilidade:** 60% pelas disciplinas de dificuldade em comum e 40% pelos horários de disponibilidade em comum. Curso não entra no cálculo (a regra de disciplina já garante o mesmo curso); semestre fica fora do MVP.
 - **Par ou grupo:** o MVP suporta apenas pares. Grupos ficam para uma versão futura.
 - **Interesse cruzado:** se A já enviou interesse para B, B não cria um novo registro; B apenas aceita o interesse existente, que passa para `match`.
+- **Contato após o match:** o telefone do colega só aparece no match confirmado. O contato acontece fora do sistema, pelo botão "Chamar no WhatsApp", que abre a conversa com uma mensagem pronta citando as disciplinas em comum. Não há chat dentro do sistema.
+- **Exclusão da conta:** apaga junto as disponibilidades, as disciplinas de dificuldade, os interesses de match (como origem ou alvo) e a foto.

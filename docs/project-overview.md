@@ -58,7 +58,7 @@ Alunos com dificuldade em uma disciplina muitas vezes estudam sozinhos por não 
 - **Especificação:** OpenSpec (schema spec-driven).
 - **Versionamento:** Git + GitHub.
 - **Deploy:** Render.
-- **Agente de IA:** GitHub Copilot (modo Agent) com Xano Developer MCP.
+- **Agente de IA:** GitHub Copilot (modo Agent) e Claude Code, com Xano Developer MCP.
 
 O banco já está estruturado no Xano com 6 tabelas: curso, disciplina, user, usuario_disciplina, disponibilidade e match_interesse. Algumas validações já existem nos endpoints.
 
