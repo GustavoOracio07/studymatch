@@ -78,9 +78,17 @@ query meus_matches verb=GET {
           
             conditional {
               if ($interesse.status == "match") {
+                // Disciplinas em comum hoje, para a mensagem pronta do WhatsApp
+                function.run "StudyMatch/calcular_compatibilidade" {
+                  input = {usuario_a: $auth.id, usuario_b: $colega.id}
+                } as $compatibilidade
+              
                 var.update $confirmados {
                   value = $confirmados
-                    |push:($item|set:"telefone":$colega.Telefone)
+                    |push:($item
+                      |set:"telefone":$colega.Telefone
+                      |set:"disciplinas_comuns":$compatibilidade.disciplinas_comuns
+                    )
                 }
               }
             

@@ -6,6 +6,7 @@ Uso: python tests/frontend/teste_telas_matches.py
 import os
 import pathlib
 import sys
+from urllib.parse import unquote
 
 RAIZ = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RAIZ / "tests" / "api"))
@@ -26,6 +27,9 @@ ta, ida, _, tel_a = novo_aluno("telamatcha")
 tb, idb, _, tel_b = novo_aluno("telamatchb")
 tc, idc, _, tel_c = novo_aluno("telamatchc")
 td, idd, _, tel_d = novo_aluno("telamatchd")
+req("PUT", "/minhas_disciplinas", ta, json={"disciplina_ids": [1]})
+req("PUT", "/minhas_disciplinas", tb, json={"disciplina_ids": [1]})
+disciplina_1 = next(d["nome"] for d in req("GET", "/disciplina").json() if d["id"] == 1)
 mi_ba = req("POST", "/match_interesse", tb, json={"usuario_alvo_id": ida}).json()["id"]
 mi_ca = req("POST", "/match_interesse", tc, json={"usuario_alvo_id": ida}).json()["id"]
 mi_ad = req("POST", "/match_interesse", ta, json={"usuario_alvo_id": idd}).json()["id"]
@@ -47,6 +51,10 @@ links = [e.proto for e in at.get("link_button")]
 check("confirmado tem o botão Chamar no WhatsApp com o número do colega",
       [(p.label, p.url.split("?")[0]) for p in links] == [("Chamar no WhatsApp", f"https://wa.me/55{tel_b}")],
       str([(p.label, p.url) for p in links]))
+check("mensagem pronta cita a disciplina em comum",
+      [unquote(p.url.split("text=")[1]) for p in links]
+      == [f"Oi, Teste! Deu match no StudyMatch: temos dificuldade em {disciplina_1}. "
+          "Bora marcar um horário para estudar juntos?"], str([p.url for p in links]))
 
 at.button(key=f"recusar_{mi_ca}").click().run()
 check("recusar mostra confirmação", "Pedido de Teste recusado." in tudo(at), tudo(at))

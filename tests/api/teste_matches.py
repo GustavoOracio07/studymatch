@@ -10,6 +10,8 @@ tb, idb, _, tel_b = novo_aluno("matchb")
 tc, idc, _, tel_c = novo_aluno("matchc")
 td, idd, _, tel_d = novo_aluno("matchd")
 
+req("PUT", "/minhas_disciplinas", ta, json={"disciplina_ids": [1, 3]})
+req("PUT", "/minhas_disciplinas", tb, json={"disciplina_ids": [1]})  # A e B têm a disciplina 1 em comum
 req("POST", "/match_interesse", tb, json={"usuario_alvo_id": ida})   # B -> A (pendente)
 r = req("POST", "/match_interesse", ta, json={"usuario_alvo_id": idc})  # A -> C
 mi_ac = r.json()["id"]
@@ -28,6 +30,8 @@ check("enviados traz pendente e recusado",
       sorted((i["usuario_id"], i["status"]) for i in m["enviados"]) == sorted([(idc, "recusado"), (idd, "pendente")]), r.text)
 check("sem telefone em recebidos e enviados", all("telefone" not in i and "Telefone" not in i
                                                     for i in m["recebidos"] + m["enviados"]), r.text)
+check("sem disciplinas_comuns em recebidos e enviados",
+      all("disciplinas_comuns" not in i for i in m["recebidos"] + m["enviados"]), r.text)
 check("nenhum confirmado ainda", m["confirmados"] == [], r.text)
 
 # A aceita o pedido de B
@@ -42,6 +46,11 @@ check("recebidos de A fica vazio", m["recebidos"] == [], r.text)
 r = req("GET", "/meus_matches", tb)
 check("B vê o telefone de A em confirmados",
       [(i["usuario_id"], i.get("telefone")) for i in r.json()["confirmados"]] == [(ida, tel_a)], r.text)
+check("confirmado traz as disciplinas em comum", [i.get("disciplinas_comuns") for i in m["confirmados"]] == [[1]], str(m))
+req("PUT", "/minhas_disciplinas", tb, json={"disciplina_ids": []})
+r = req("GET", "/meus_matches", ta)
+check("sem disciplina em comum, disciplinas_comuns vem vazio",
+      [i.get("disciplinas_comuns") for i in r.json()["confirmados"]] == [[]], r.text)
 r = req("GET", "/meus_matches", tc)
 check("C (recusou) não vê telefone de A", all("telefone" not in i for i in r.json()["enviados"] + r.json()["recebidos"])
       and r.json()["confirmados"] == [], r.text)

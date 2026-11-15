@@ -7,6 +7,7 @@ import io
 import json
 import pathlib
 import sys
+from urllib.parse import unquote
 
 import requests
 from PIL import Image
@@ -14,6 +15,7 @@ from PIL import Image
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2]))
 
 from studymatch.api import MSG_LIMITE, MSG_REDE, MSG_SESSAO_EXPIRADA, ErroAPI, XanoAPI, foto_data_url  # noqa: E402
+from studymatch.dominio import link_whatsapp  # noqa: E402
 
 
 class RespostaFalsa:
@@ -126,6 +128,18 @@ check("remover_foto faz DELETE", http.chamadas[0][:2] == ("DELETE", "https://x/a
 
 http = HttpFalso(RespostaFalsa(200))
 check("resposta vazia devolve None", XanoAPI("t", base="https://x", http=http)._req("DELETE", "/x") is None)
+
+url = link_whatsapp("(11) 97335-8648", "Ana", ["Cálculo I", "Banco de Dados"])
+check("link_whatsapp põe o DDI 55 e cita as disciplinas em comum",
+      url.split("?")[0] == "https://wa.me/5511973358648" and unquote(url.split("text=")[1])
+      == "Oi, Ana! Deu match no StudyMatch: temos dificuldade em Cálculo I e Banco de Dados. "
+         "Bora marcar um horário para estudar juntos?")
+check("link_whatsapp junta três disciplinas com vírgula e 'e'",
+      "em A, B e C." in unquote(link_whatsapp("11973358648", "Ana", ["A", "B", "C"])))
+check("link_whatsapp sem disciplina usa a mensagem genérica",
+      unquote(link_whatsapp("11973358648", "Ana").split("text=")[1])
+      == "Oi, Ana! Deu match no StudyMatch. Bora marcar um horário para estudar juntos?")
+check("link_whatsapp com telefone curto devolve None", link_whatsapp("12345", "Ana", ["A"]) is None)
 
 print(f"\n{falhas} falhas")
 raise SystemExit(1 if falhas else 0)
