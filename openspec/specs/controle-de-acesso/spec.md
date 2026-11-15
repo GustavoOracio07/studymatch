@@ -76,7 +76,7 @@ Os endpoints de criação, edição e exclusão de `curso` e `disciplina` SHALL 
 - **THEN** o sistema responde 403 e nada é gravado
 
 ### Requirement: Exclusão em cascata do usuário
-O aluno SHALL poder apagar a própria conta com `DELETE /auth/me`, e o sistema SHALL apagar junto, na mesma transação, as disponibilidades, as disciplinas de dificuldade e todos os interesses de match em que ele é origem ou alvo, em qualquer status.
+O aluno SHALL poder apagar a própria conta com `DELETE /auth/me`, e o sistema SHALL apagar junto, na mesma transação, as disponibilidades, as disciplinas de dificuldade e todos os interesses de match em que ele é origem ou alvo, em qualquer status, e SHALL pedir a exclusão do arquivo da foto de perfil com `storage.delete_file`, se houver.
 
 #### Scenario: Aluno apaga a própria conta
 - **WHEN** um aluno com disponibilidades e disciplinas de dificuldade chama `DELETE /auth/me`
@@ -85,6 +85,10 @@ O aluno SHALL poder apagar a própria conta com `DELETE /auth/me`, e o sistema S
 #### Scenario: Interesses de match do aluno apagado
 - **WHEN** o aluno A tem um match confirmado com B, um interesse pendente enviado para C e um interesse recebido de D, e A chama `DELETE /auth/me`
 - **THEN** os três registros de `match_interesse` são apagados e não aparecem mais em `GET /match_interesse` de B, C e D
+
+#### Scenario: Foto do aluno apagado
+- **WHEN** um aluno com foto de perfil chama `DELETE /auth/me`
+- **THEN** o sistema responde 200 e o login dele passa a falhar, como numa conta sem foto
 
 #### Scenario: Exclusão sem token
 - **WHEN** um cliente chama `DELETE /auth/me` sem token
