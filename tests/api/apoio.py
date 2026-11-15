@@ -3,6 +3,7 @@
 O plano free do Xano aceita 10 requisições a cada 20 s, então `req` espera entre as chamadas
 e repete quando recebe 429.
 """
+import atexit
 import os
 import random
 import time
@@ -13,6 +14,23 @@ BASE = os.environ.get("XANO_API_URL", "https://x8ki-letl-twmt.n7.xano.io/api:r4i
 
 _ultima = [0.0]
 _placar = {"ok": 0, "falhas": 0}
+_criados = []  # tokens dos alunos criados neste script e ainda não apagados
+
+
+def registrar(token):
+    """Anota um aluno criado fora de `novo_aluno` (ex.: pela tela) para ser apagado no fim do script."""
+    if token and token not in _criados:
+        _criados.append(token)
+
+
+@atexit.register
+def _limpar():
+    """Apaga os alunos que sobraram, mesmo se o teste parou no meio (erro, assert ou Ctrl+C)."""
+    for token in list(_criados):
+        try:
+            apagar_aluno(token)
+        except Exception as e:  # sem rede, por exemplo: avisa e segue
+            print("aviso: não consegui apagar um aluno de teste:", e)
 
 
 def check(nome, cond, extra=""):
@@ -33,6 +51,8 @@ def req(method, path, token=None, **kw):
         _ultima[0] = time.time()
         r = requests.request(method, BASE + path, headers=headers, timeout=30, **kw)
         if r.status_code != 429:
+            if path == "/auth/signup" and r.status_code == 200:
+                registrar(r.json().get("authToken"))
             return r
         time.sleep(21)
     return r
@@ -52,7 +72,10 @@ def novo_aluno(tag, curso=1, semestre=3):
 
 
 def apagar_aluno(token):
-    return req("DELETE", "/auth/me", token)
+    r = req("DELETE", "/auth/me", token)
+    if r.status_code in (200, 401) and token in _criados:  # 401: a conta já não existe
+        _criados.remove(token)
+    return r
 
 
 def resumo():
