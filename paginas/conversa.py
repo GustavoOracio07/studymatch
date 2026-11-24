@@ -10,16 +10,23 @@ MAX_CARACTERES = 500
 
 api = sessao.api()
 
-if st.button("Voltar para Meus matches", icon=":material/arrow_back:"):
-    st.switch_page("paginas/matches.py")
-
 colega = st.session_state.get("conversa")
+
+
+def botao_voltar():
+    if st.button("Voltar para Meus matches", icon=":material/arrow_back:"):
+        st.switch_page("paginas/matches.py")
+
+
 if not colega:
+    botao_voltar()
     st.info("Escolha um colega em Meus matches, na aba Confirmados, para conversar.")
     st.stop()
 
 with visual.hero():
-    st.title(f"Conversa com {colega['nome']}")
+    st.html(visual.topo_conversa(colega))
+    botao_voltar()
+visual.estilo_foto_conversa(colega)
 
 try:
     aluno = sessao.aluno_atual()
@@ -32,7 +39,7 @@ except ErroAPI as e:
 estado = sessao.dados_da_sessao("mensagens", dict).setdefault(
     colega["interesse_id"], {"itens": {}, "ultima": None, "buscou_em": None, "enviou": False})
 
-texto = st.chat_input("Escreva uma mensagem", max_chars=MAX_CARACTERES)
+texto = st.chat_input(f"Escreva uma mensagem para {colega['nome']}...", max_chars=MAX_CARACTERES)
 if texto:
     try:
         enviada = api.enviar_mensagem(colega["interesse_id"], texto)
@@ -70,12 +77,9 @@ def conversa():
     with st.container(height=420, key="mensagens_conversa", autoscroll=True):
         if not estado["itens"]:
             st.caption("Nenhuma mensagem ainda.")
-        for _, m in sorted(estado["itens"].items()):
-            minha = m["remetente_id"] == aluno["id"]
-            autor = "Você" if minha else colega["nome"]
-            with st.chat_message(autor, avatar=":material/person:" if minha else ":material/school:"):
-                visual.html_(f'<div class="sm-conversa-autor">{visual.esc(autor)}</div>')
-                st.text(m["texto"])  # texto literal: não interpreta HTML nem Markdown
+        else:
+            mensagens = [m for _, m in sorted(estado["itens"].items())]
+            st.html(visual.baloes(mensagens, colega, aluno["id"]))
 
 
 conversa()
