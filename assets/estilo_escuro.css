@@ -186,3 +186,22 @@ header[data-testid="stHeader"] { background: transparent; }
 }
 .st-key-cartao_foto [data-testid="stFileUploaderDropzone"] span,
 .st-key-cartao_foto [data-testid="stFileUploaderFile"] div { color: var(--sm-texto) !important; }
+
+/* Conversa */
+.st-key-mensagens_conversa { border-color: var(--sm-borda) !important; }
+[data-testid="stChatMessageAvatarCustom"] {
+  background: var(--sm-roxo-claro) !important;
+  border-color: var(--sm-borda) !important;
+}
+[data-testid="stChatMessageAvatarCustom"] span { color: #C4B9FF !important; }
+[data-testid="stBottom"],
+[data-testid="stBottom"] > div,
+[data-testid="stBottomBlockContainer"] { background: var(--sm-fundo) !important; }
+[data-testid="stChatInput"],
+[data-testid="stChatInput"] > div,
+[data-testid="stChatInput"] div {
+  background-color: var(--sm-campo) !important;
+  border-color: var(--sm-borda) !important;
+}
+[data-testid="stChatInput"] textarea { color: var(--sm-texto) !important; caret-color: var(--sm-texto); }
+[data-testid="stChatInput"] textarea::placeholder { color: var(--sm-cinza) !important; }

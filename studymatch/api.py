@@ -67,9 +67,9 @@ class XanoAPI:
         self._http = http or requests
         self._esperar = esperar
 
-    def _req(self, metodo, caminho, **kwargs):
+    def _req(self, metodo, caminho, repetir=True, **kwargs):
         headers = {"Authorization": f"Bearer {self.token}"} if self.token else {}
-        for espera in (*ESPERAS_APOS_LIMITE, None):
+        for espera in (*(ESPERAS_APOS_LIMITE if repetir else ()), None):
             try:
                 r = self._http.request(metodo, self.base + caminho, headers=headers, timeout=20, **kwargs)
             except requests.RequestException as e:
@@ -149,6 +149,17 @@ class XanoAPI:
 
     def cancelar_interesse(self, interesse_id):
         return self._req("DELETE", f"/match_interesse/{interesse_id}")
+
+    # --- conversa
+    def enviar_mensagem(self, interesse_id, texto):
+        return self._req("POST", "/mensagem", json={"match_interesse_id": interesse_id, "texto": texto})
+
+    def mensagens(self, interesse_id, depois_de=None):
+        """Últimas mensagens ou só as novas. Não espera após um 429: a próxima busca automática tenta de novo."""
+        params = {"match_interesse_id": interesse_id}
+        if depois_de:
+            params["depois_de"] = depois_de
+        return self._req("GET", "/mensagem", repetir=False, params=params)
 
     # --- catálogo (público)
     def cursos(self):

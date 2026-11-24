@@ -129,6 +129,24 @@ check("remover_foto faz DELETE", http.chamadas[0][:2] == ("DELETE", "https://x/a
 http = HttpFalso(RespostaFalsa(200))
 check("resposta vazia devolve None", XanoAPI("t", base="https://x", http=http)._req("DELETE", "/x") is None)
 
+http = HttpFalso(RespostaFalsa(200, {"id": 1}))
+XanoAPI("t", base="https://x", http=http).enviar_mensagem(5, "Oi!")
+check("enviar_mensagem envia só o match e o texto",
+      http.chamadas[0][:2] == ("POST", "https://x/mensagem")
+      and http.chamadas[0][3]["json"] == {"match_interesse_id": 5, "texto": "Oi!"})
+for depois_de, esperado in ((None, {"match_interesse_id": 5}), (8, {"match_interesse_id": 5, "depois_de": 8})):
+    http = HttpFalso(RespostaFalsa(200, []))
+    XanoAPI("t", base="https://x", http=http).mensagens(5, depois_de)
+    check(f"mensagens(depois_de={depois_de}) envia os parâmetros certos", http.chamadas[0][3]["params"] == esperado)
+http = HttpFalso(RespostaFalsa(429))
+try:
+    XanoAPI("t", base="https://x", http=http).mensagens(5)
+    erro = None
+except ErroAPI as e:
+    erro = e
+check("busca de mensagens não espera nem repete após 429",
+      erro and erro.mensagem == MSG_LIMITE and len(http.chamadas) == 1)
+
 url = link_whatsapp("(11) 97335-8648", "Ana", ["Cálculo I", "Banco de Dados"])
 check("link_whatsapp põe o DDI 55 e cita as disciplinas em comum",
       url.split("?")[0] == "https://wa.me/5511973358648" and unquote(url.split("text=")[1])

@@ -363,3 +363,16 @@ p.sm-foto-info-sub {
 .st-key-cartao_foto [data-testid="stFileUploaderDropzoneInstructions"] small {
   display: none;
 }
+
+/* Conversa */
+.sm-conversa-autor {
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0.75;
+}
+.st-key-mensagens_conversa [data-testid="stChatMessage"] [data-testid="stVerticalBlock"] {
+  gap: 0.1rem;
+}
+.st-key-mensagens_conversa [data-testid="stMarkdownContainer"] {
+  margin-bottom: 0;
+}
