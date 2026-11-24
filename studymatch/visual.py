@@ -3,10 +3,14 @@
 Só apresentação. Todo texto vindo de usuários passa por `esc()` antes de ir para o HTML.
 """
 import base64
+import datetime as dt
 import html
 import pathlib
+import re
 
 import streamlit as st
+
+from studymatch.dominio import juntar
 
 ASSETS = pathlib.Path(__file__).resolve().parents[1] / "assets"
 LOGO = str(ASSETS / "logo.svg")
@@ -129,6 +133,54 @@ def linha(nome_icone, texto, classe=""):
 def hero():
     """Faixa lilás do topo das páginas, como no Figma."""
     return st.container(key="hero")
+
+
+# --- Conversa ----------------------------------------------------------------
+
+_BRASILIA = dt.timezone(dt.timedelta(hours=-3))  # o servidor roda em UTC
+
+
+def hora_mensagem(criada_em, agora=None):
+    """Milissegundos do Xano -> "18:38" ou, se não for de hoje, "23/11 18:38"."""
+    quando = dt.datetime.fromtimestamp(criada_em / 1000, _BRASILIA)
+    hoje = (agora or dt.datetime.now(_BRASILIA)).date()
+    return quando.strftime("%H:%M" if quando.date() == hoje else "%d/%m %H:%M")
+
+
+def topo_conversa(colega):
+    foto = avatar(colega["nome"], colega["sobrenome"], colega["usuario_id"], foto_url=colega["foto_url"])
+    disciplinas = colega["disciplinas"]
+    sub = f'<p>Match de estudos em: {esc(juntar(disciplinas))}</p>' if disciplinas else ""
+    nome = f"{colega['nome']} {colega['sobrenome'] or ''}".strip()
+    return f'<div class="sm-conversa-topo">{foto}<div><h1>Conversa com {esc(nome)}</h1>{sub}</div></div>'
+
+
+def estilo_foto_conversa(colega):
+    """Foto do colega em uma regra só, para não repetir a imagem em cada balão."""
+    if colega["foto_url"]:
+        url = re.sub(r"""["'\\\s<>()]""", "", colega["foto_url"])
+        st.html(f'<style>.sm-balao-foto {{ background-image: url("{url}"); }}</style>')
+
+
+def baloes(mensagens, colega, meu_id):
+    """Mensagens em balões. O texto vai escapado, dentro de HTML puro (sem Markdown)."""
+    if colega["foto_url"]:
+        foto = '<div class="sm-avatar sm-balao-avatar sm-balao-foto"></div>'
+    else:
+        cor = _CORES_AVATAR[(colega["usuario_id"] or 0) % len(_CORES_AVATAR)]
+        foto = (f'<div class="sm-avatar sm-balao-avatar" style="background:{cor}" aria-hidden="true">'
+                f'{iniciais(colega["nome"], colega["sobrenome"])}</div>')
+    partes = []
+    for m in mensagens:
+        minha = m["remetente_id"] == meu_id
+        autor = "Você" if minha else colega["nome"]
+        partes.append(
+            f'<div class="sm-mensagem {"sm-mensagem-minha" if minha else "sm-mensagem-colega"}">'
+            + ("" if minha else foto)
+            + f'<div class="sm-balao"><span class="sm-oculto">{esc(autor)}: </span>'
+              f'<div class="sm-balao-texto">{esc(m["texto"])}</div>'
+              f'<div class="sm-balao-hora">{hora_mensagem(m["created_at"])}</div></div></div>')
+    return f'<div class="sm-mensagens">{"".join(partes)}</div>'
 
 
 # --- Telas de acesso ---------------------------------------------------------

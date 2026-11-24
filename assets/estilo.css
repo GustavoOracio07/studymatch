@@ -365,14 +365,100 @@ p.sm-foto-info-sub {
 }
 
 /* Conversa */
-.sm-conversa-autor {
-  font-size: 0.8rem;
-  font-weight: 600;
-  opacity: 0.75;
-}
-.st-key-mensagens_conversa [data-testid="stChatMessage"] [data-testid="stVerticalBlock"] {
-  gap: 0.1rem;
-}
-.st-key-mensagens_conversa [data-testid="stMarkdownContainer"] {
+.st-key-hero:has(.sm-conversa-topo) {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 2.8rem;
   margin-bottom: 0;
+}
+.st-key-hero:has(.sm-conversa-topo) > * {
+  width: auto !important;
+}
+.sm-conversa-topo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.sm-conversa-topo h1 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+.sm-conversa-topo p {
+  margin: 0.15rem 0 0;
+  font-size: 0.9rem;
+}
+/* Ocupa a altura livre da tela, descontando o cabeçalho e o campo de envio */
+[data-testid="stLayoutWrapper"]:has(> .st-key-mensagens_conversa) {
+  flex: 0 0 max(280px, calc(100vh - 380px)) !important;
+  height: max(280px, calc(100vh - 380px)) !important;
+}
+.st-key-mensagens_conversa {
+  background: #FFFFFF;
+}
+.sm-mensagens {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.sm-mensagem {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+}
+.sm-mensagem-minha {
+  justify-content: flex-end;
+}
+.sm-balao-avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 0.8rem;
+}
+.sm-balao-foto {
+  background-size: cover;
+  background-position: center;
+}
+.sm-balao {
+  position: relative;
+  max-width: min(75%, 560px);
+  padding: 0.55rem 0.9rem;
+  border-radius: 16px;
+  background: #EEF0F6;
+  color: #111827;
+}
+.sm-mensagem-colega .sm-balao {
+  border-bottom-left-radius: 4px;
+}
+.sm-mensagem-minha .sm-balao {
+  background: var(--sm-roxo);
+  color: #FFFFFF;
+  border-bottom-right-radius: 4px;
+}
+.sm-balao-texto {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
+.sm-balao-hora {
+  margin-top: 0.15rem;
+  font-size: 0.7rem;
+  text-align: right;
+  color: #5B6270;
+}
+.sm-mensagem-minha .sm-balao-hora {
+  color: #E4DEFF;
+}
+/* Só para leitores de tela */
+.sm-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+[data-testid="stChatInputSubmitButton"]:not(:disabled) {
+  background: var(--sm-roxo) !important;
+  color: #FFFFFF !important;
 }
