@@ -158,9 +158,19 @@ header[data-testid="stHeader"] {
 .st-key-cartao_acesso [data-testid="stBaseButton-primary"]:hover {
   background: #142D44;
 }
-.st-key-cartao_acesso button[data-testid="stBaseButton-tertiaryFormSubmit"],
-.st-key-cartao_acesso button[data-testid="stBaseButton-tertiaryFormSubmit"] p,
-.st-key-cartao_acesso button[data-testid="stBaseButton-tertiaryFormSubmit"] span {
+/* Fica fora do formulário (Enter não aciona), mas na mesma linha do botão principal */
+.st-key-acao_secundaria {
+  width: fit-content !important;
+  margin-top: calc(-42px - 1rem);
+  height: 42px !important;
+  flex: 0 0 42px !important;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+.st-key-cartao_acesso button[data-testid="stBaseButton-tertiary"],
+.st-key-cartao_acesso button[data-testid="stBaseButton-tertiary"] p,
+.st-key-cartao_acesso button[data-testid="stBaseButton-tertiary"] span {
   color: #1B3A57;
   font-weight: 500;
 }
