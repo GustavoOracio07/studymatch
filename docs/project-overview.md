@@ -26,9 +26,10 @@ Alunos com dificuldade em uma disciplina muitas vezes estudam sozinhos por não 
 - Cadastro de disponibilidade (dia da semana e faixa de horário).
 - Sugestão de colegas compatíveis com percentual.
 - Interesse em um colega e resposta (aceitar/recusar), gerando match.
+- Conversa simples por texto entre os dois alunos de um match confirmado (incluída depois do escopo inicial).
 
 **Fora do escopo inicial:**
-- Chat dentro do sistema.
+- Chat em tempo real, com notificações, anexos ou grupos.
 - Grupos com mais de duas pessoas.
 - Notificações por e-mail/push.
 - Cadastro de cursos e disciplinas pela interface.
@@ -42,6 +43,7 @@ Alunos com dificuldade em uma disciplina muitas vezes estudam sozinhos por não 
 - Sugestão de matches compatíveis.
 - Interesse, aceite e recusa de match.
 - Listagem dos matches confirmados com contato.
+- Conversa por texto no match confirmado.
 
 ## 7. Requisitos e restrições importantes
 - Um aluno não pode demonstrar interesse em si mesmo.
@@ -60,7 +62,7 @@ Alunos com dificuldade em uma disciplina muitas vezes estudam sozinhos por não 
 - **Deploy:** Render.
 - **Agente de IA:** GitHub Copilot (modo Agent) e Claude Code, com Xano Developer MCP.
 
-O banco já está estruturado no Xano com 6 tabelas: curso, disciplina, user, usuario_disciplina, disponibilidade e match_interesse. Algumas validações já existem nos endpoints.
+O banco já está estruturado no Xano com 7 tabelas: curso, disciplina, user, usuario_disciplina, disponibilidade, match_interesse e mensagem. Algumas validações já existem nos endpoints.
 
 ## 9. Princípios de desenvolvimento
 - Especificar antes de implementar.

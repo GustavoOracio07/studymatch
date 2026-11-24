@@ -36,9 +36,9 @@
 .st-key-cartao_acesso [data-testid="stBaseButton-primary"]:hover {
   background: #4A30CF;
 }
-.st-key-cartao_acesso button[data-testid="stBaseButton-tertiaryFormSubmit"],
-.st-key-cartao_acesso button[data-testid="stBaseButton-tertiaryFormSubmit"] p,
-.st-key-cartao_acesso button[data-testid="stBaseButton-tertiaryFormSubmit"] span {
+.st-key-cartao_acesso button[data-testid="stBaseButton-tertiary"],
+.st-key-cartao_acesso button[data-testid="stBaseButton-tertiary"] p,
+.st-key-cartao_acesso button[data-testid="stBaseButton-tertiary"] span {
   color: #C4B9FF;
 }
 .sm-etapa {

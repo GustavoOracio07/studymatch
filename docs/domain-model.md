@@ -9,6 +9,7 @@ Curso
         ├── Dificuldade em Disciplina (usuario_disciplina) ──► Disciplina
         ├── Disponibilidade (disponibilidade)
         └── Interesse de Match (match_interesse) ──► outro Aluno
+              └── Mensagem (mensagem)
 ```
 
 ## Curso (`curso`)
@@ -45,9 +46,14 @@ Registro de que um aluno demonstrou interesse em estudar com outro.
 - **Regras:** não pode ter o mesmo aluno como origem e alvo; não pode repetir o par origem/alvo.
 - **Relacionamentos:** referencia dois alunos.
 
+## Mensagem (`mensagem`)
+Texto trocado entre os dois alunos de um match confirmado.
+- **Informações:** match, remetente, destinatário, texto, data de envio.
+- **Regras:** só os dois alunos do match leem e enviam; texto de 1 a 500 caracteres; a tela busca mensagens novas a cada 8 segundos (não é tempo real).
+
 ## Decisões do domínio
 - **Cálculo da compatibilidade:** 60% pelas disciplinas de dificuldade em comum e 40% pelos horários de disponibilidade em comum. Curso não entra no cálculo (a regra de disciplina já garante o mesmo curso); semestre fica fora do MVP.
 - **Par ou grupo:** o MVP suporta apenas pares. Grupos ficam para uma versão futura.
 - **Interesse cruzado:** se A já enviou interesse para B, B não cria um novo registro; B apenas aceita o interesse existente, que passa para `match`.
-- **Contato após o match:** o telefone do colega só aparece no match confirmado. O contato acontece fora do sistema, pelo botão "Chamar no WhatsApp", que abre a conversa com uma mensagem pronta citando as disciplinas em comum. Não há chat dentro do sistema.
-- **Exclusão da conta:** apaga junto as disponibilidades, as disciplinas de dificuldade, os interesses de match (como origem ou alvo) e a foto.
+- **Contato após o match:** o telefone do colega só aparece no match confirmado. O contato acontece pelo botão "Chamar no WhatsApp", que abre a conversa com uma mensagem pronta citando as disciplinas em comum, ou dentro do sistema, pela conversa de texto do match.
+- **Exclusão da conta:** apaga junto as disponibilidades, as disciplinas de dificuldade, os interesses de match (como origem ou alvo), as mensagens (enviadas e recebidas) e a foto.

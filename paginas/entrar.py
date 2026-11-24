@@ -10,11 +10,9 @@ with visual.layout_acesso():
     with st.form("entrar", border=False):
         email = st.text_input("E-mail", placeholder="Endereço de e-mail", label_visibility="collapsed")
         senha = st.text_input("Senha", type="password", placeholder="Senha", label_visibility="collapsed")
-        with st.container(horizontal=True, horizontal_alignment="distribute", vertical_alignment="center"):
-            criar_conta = st.form_submit_button("Criar conta", type="tertiary")
-            enviado = st.form_submit_button("Entrar", type="primary")
+        enviado = visual.botao_principal("Entrar")
 
-    if criar_conta:
+    if visual.botao_secundario("Criar conta"):
         st.switch_page("paginas/cadastro.py")
 
     if enviado:

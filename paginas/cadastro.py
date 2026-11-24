@@ -17,14 +17,6 @@ def ir_para(novo_passo, **valores):
     st.rerun()
 
 
-def botoes(voltar, avancar):
-    with st.container(horizontal=True, horizontal_alignment="distribute", vertical_alignment="center"):
-        clicou_voltar = st.form_submit_button(voltar, type="tertiary",
-                                              icon=":material/arrow_back:" if voltar == "Voltar" else None)
-        clicou_avancar = st.form_submit_button(avancar, type="primary")
-    return clicou_voltar, clicou_avancar
-
-
 with visual.layout_acesso():
     visual.html_(visual.etapas(passo))
 
@@ -36,8 +28,8 @@ with visual.layout_acesso():
                                  label_visibility="collapsed")
             sobrenome = st.text_input("Sobrenome *", value=dados.get("sobrenome", ""), placeholder="Sobrenome",
                                       label_visibility="collapsed")
-            entrar, avancar = botoes("Entrar", "Avançar")
-        if entrar:
+            avancar = visual.botao_principal("Avançar")
+        if visual.botao_secundario("Entrar"):
             st.switch_page("paginas/entrar.py")
         if avancar:
             if not nome.strip() or not sobrenome.strip():
@@ -54,8 +46,8 @@ with visual.layout_acesso():
                                       placeholder="Confirmar senha", label_visibility="collapsed")
             email = st.text_input("E-mail *", value=dados.get("email", ""), placeholder="Endereço de e-mail",
                                   label_visibility="collapsed")
-            voltar, avancar = botoes("Voltar", "Avançar")
-        if voltar:
+            avancar = visual.botao_principal("Avançar")
+        if visual.botao_secundario("Voltar", ":material/arrow_back:"):
             ir_para(1)
         if avancar:
             if not senha or not confirmar or not email.strip():
@@ -83,8 +75,8 @@ with visual.layout_acesso():
                                      help="Só aparece para quem tiver um match confirmado com você.")
             sobre_mim = st.text_area("Sobre mim", placeholder="Sobre mim (opcional)", label_visibility="collapsed",
                                      height=90)
-            voltar, criar = botoes("Voltar", "Criar conta")
-        if voltar:
+            criar = visual.botao_principal("Criar conta")
+        if visual.botao_secundario("Voltar", ":material/arrow_back:"):
             ir_para(2)
         if criar:
             if curso is None or semestre is None or not telefone.strip():

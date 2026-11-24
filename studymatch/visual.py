@@ -166,6 +166,18 @@ def layout_acesso():
     return lado.container(key="cartao_acesso")
 
 
+def botao_principal(rotulo):
+    """Único botão de envio do formulário: no Streamlit, o Enter aciona o primeiro que houver."""
+    with st.container(horizontal=True, horizontal_alignment="right"):
+        return st.form_submit_button(rotulo, type="primary")
+
+
+def botao_secundario(rotulo, icone=None):
+    """Botão fora do formulário (o Enter não o aciona), mostrado na mesma linha do principal pelo CSS."""
+    with st.container(key="acao_secundaria"):
+        return st.button(rotulo, type="tertiary", icon=icone)
+
+
 def etapas(atual, total=3):
     partes = []
     for n in range(1, total + 1):

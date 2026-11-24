@@ -1,6 +1,6 @@
 # StudyMatch
 
-Aplicação web que conecta alunos com dificuldades acadêmicas em comum para estudarem juntos. O aluno informa as disciplinas em que tem dificuldade e os horários livres, e o sistema sugere colegas compatíveis. A compatibilidade é calculada assim: 60% pelas disciplinas em comum e 40% pelos horários em comum. Quando os dois demonstram interesse, o match é confirmado e o telefone do colega é liberado, com um botão "Chamar no WhatsApp" que abre a conversa com uma mensagem pronta citando as disciplinas em comum. O aluno também pode ter foto de perfil, e a interface tem modo claro e escuro.
+Aplicação web que conecta alunos com dificuldades acadêmicas em comum para estudarem juntos. O aluno informa as disciplinas em que tem dificuldade e os horários livres, e o sistema sugere colegas compatíveis. A compatibilidade é calculada assim: 60% pelas disciplinas em comum e 40% pelos horários em comum. Quando os dois demonstram interesse, o match é confirmado e o telefone do colega é liberado, com um botão "Chamar no WhatsApp" que abre a conversa com uma mensagem pronta citando as disciplinas em comum, e uma conversa por texto dentro do próprio site. O aluno também pode ter foto de perfil, e a interface tem modo claro e escuro.
 
 App publicado: https://studymatch-y50f.onrender.com/
 
@@ -15,7 +15,7 @@ Projeto Integrador — Innovation Lab: Advanced No/Low Code — ADS, Faculdade I
 
 ```text
 app.py                 ponto de entrada (navegação conforme o login)
-paginas/               telas: entrar, cadastro (3 etapas), início (busca de colegas), matches, perfil, sair
+paginas/               telas: entrar, cadastro (3 etapas), início (busca de colegas), matches, conversa, perfil, sair
 studymatch/            cliente da API (api.py), sessão (sessao.py), rótulos (dominio.py) e visual (visual.py)
 assets/                CSS e logos do tema (referência: protótipo no Figma)
 tests/api/             testes de API contra o Xano
@@ -52,15 +52,23 @@ python tests/api/teste_seguranca.py          # autenticação e controle de aces
 python tests/api/teste_perfil.py             # perfil, disciplinas e disponibilidade
 python tests/api/teste_busca.py              # compatibilidade e interesse
 python tests/api/teste_matches.py            # meus matches e telefone após o match
+python tests/api/teste_chat.py               # conversa do match (envio, leitura, acesso, exclusão)
 python tests/api/teste_foto.py               # foto de perfil (envio, troca, remoção)
 python tests/frontend/teste_telas_base.py    # login, cadastro e logout
 python tests/frontend/teste_telas_perfil.py
 python tests/frontend/teste_telas_busca.py
 python tests/frontend/teste_telas_matches.py
+python tests/frontend/teste_telas_chat.py
 python tests/frontend/teste_telas_tema.py     # modo claro/escuro
 ```
 
 Por padrão, os testes usam a API do projeto. Para apontar para outra, defina `XANO_API_URL`.
+
+## Limitações conhecidas
+
+- A conversa não é em tempo real: a tela busca mensagens novas a cada 8 segundos.
+- O plano free do Xano aceita 10 requisições a cada 20 s, e cada conversa aberta gasta de 2 a 3. Com várias abertas, a tela pode demorar a atualizar.
+- Ao abrir a conversa, aparecem as últimas 50 mensagens. Não há notificações, anexos nem como editar, apagar ou bloquear.
 
 ## Backend (Xano)
 

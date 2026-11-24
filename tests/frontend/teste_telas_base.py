@@ -51,10 +51,16 @@ def cadastrar(at, nome, email, telefone):
     campo(at, "Confirmar senha").input("senha1234")
     campo(at, "E-mail").input(email)
     enviar(at, "Avançar")
+    check("na etapa 3, o Enter só pode acionar Criar conta", so_envia(at, "Criar conta"))
     campo(at, "Telefone").input(telefone)
     at.selectbox[0].select_index(0)
     at.selectbox[1].select_index(2)
     enviar(at, "Criar conta")
+
+
+def so_envia(at, rotulo):
+    """O Enter aciona o primeiro botão de envio do formulário: só pode existir o principal."""
+    return [b.label for b in at.button if b.form_id] == [rotulo]
 
 
 # --- visitante
@@ -62,6 +68,7 @@ at = app()
 check("visitante vê a tela Entrar", "Bem-vindo ao" in textos(at) and "Entre na sua conta" in textos(at)
       and not any(t.value.startswith("Olá") for t in at.title), textos(at))
 
+check("no login, o Enter só pode acionar Entrar", so_envia(at, "Entrar"), str([(b.label, b.form_id) for b in at.button]))
 enviar(at, "Entrar")
 check("campos vazios pedem preenchimento", "Preencha o e-mail e a senha." in textos(at), textos(at))
 
@@ -70,12 +77,14 @@ n = random.randint(10**7, 10**8 - 1)
 email = f"teste.tela.{n}@studymatch.test"
 at.switch_page("paginas/cadastro.py").run()
 check("abre a etapa 1 do cadastro", "Como você se chama?" in textos(at), textos(at))
+check("na etapa 1, o Enter só pode acionar Avançar", so_envia(at, "Avançar"))
 enviar(at, "Avançar")
 check("etapa 1 exige nome e sobrenome", "Preencha o nome e o sobrenome." in textos(at), textos(at))
 campo(at, "Nome").input("Tela")
 campo(at, "Sobrenome").input("Teste")
 enviar(at, "Avançar")
 check("avança para a etapa 2", "Insira seu e-mail e crie uma senha segura" in textos(at), textos(at))
+check("na etapa 2, o Enter só pode acionar Avançar", so_envia(at, "Avançar"))
 campo(at, "Senha").input("senha1234")
 campo(at, "Confirmar senha").input("outrasenha1")
 campo(at, "E-mail").input(email)

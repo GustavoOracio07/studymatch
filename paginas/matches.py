@@ -135,6 +135,9 @@ with aba_confirmados:
         st.info("Quando um match for confirmado, o telefone do colega aparece aqui.")
     for item in confirmados:
         def botoes(item=item):
+            if st.button("Conversar", key=f"conversar_{item['interesse_id']}", icon=":material/forum:"):
+                st.session_state["conversa"] = {"interesse_id": item["interesse_id"], "nome": item["nome"]}
+                st.switch_page("paginas/conversa.py")
             disciplinas = [nome_disciplina[i] for i in item.get("disciplinas_comuns") or [] if i in nome_disciplina]
             url = link_whatsapp(item.get("telefone"), item["nome"], disciplinas)
             if url:

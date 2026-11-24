@@ -1,4 +1,4 @@
-// Apaga um usuário e, em cascata, as disponibilidades, as disciplinas de dificuldade, os interesses de match e a foto dele
+// Apaga um usuário e, em cascata, as disponibilidades, as disciplinas de dificuldade, os interesses de match, as mensagens e a foto dele
 function "StudyMatch/excluir_usuario" {
   input {
     int user_id
@@ -20,6 +20,11 @@ function "StudyMatch/excluir_usuario" {
         db.bulk.delete Usuario_disciplina {
           where = $db.Usuario_disciplina.usuario_id == $input.user_id
         } as $disciplinas_apagadas
+      
+        // Mensagens enviadas e recebidas nas conversas do usuário
+        db.bulk.delete mensagem {
+          where = $db.mensagem.remetente_id == $input.user_id || $db.mensagem.destinatario_id == $input.user_id
+        } as $mensagens_apagadas
       
         // Interesses de match em que o usuário é origem ou alvo (qualquer status)
         db.bulk.delete Match_interesse {
